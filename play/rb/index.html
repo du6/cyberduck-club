@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0A0C11">
+  <title>Robot Brawl: Bolt &amp; Blade</title>
+  <meta name="description" content="Bolt a robot together, program its brain, and fight. Free, no ads.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <style>
+    /* ⚠ THE DEFAULT TEMPLATE IS WHY THE WEB BUILD LOOKED UNPROFESSIONAL.
+       It hard-codes canvas width=960 height=600 — a LANDSCAPE box — and only
+       goes full-viewport when the user agent matches a phone. This game's UI
+       is portrait-phone-only, so on any desktop it was a squeezed portrait UI
+       inside a landscape frame, centred on a white page, under a Unity logo
+       footer and a title reading "Unity Web Player | ...".
+
+       This template does three things instead:
+        1. the canvas fills the viewport on EVERY device, not just phones;
+        2. the page ground is the game's own near-black (#0A0C11, the site's
+           colour), so letterboxing reads as intentional framing rather than
+           as a broken layout;
+        3. no Unity chrome, real title, real favicon.  */
+    html, body { margin: 0; padding: 0; height: 100%; background: #0A0C11; overflow: hidden; }
+    body { font: 15px/1.4 -apple-system, "Helvetica Neue", system-ui, sans-serif; color: #D9DEE8; }
+    #unity-container { position: fixed; inset: 0; }
+    #unity-canvas { width: 100%; height: 100%; display: block; background: #0A0C11; }
+
+    /* Loading: a 34 MB first visit is a real wait, so it gets a real screen
+       rather than a bare progress sliver — the name, and honest progress. */
+    #boot {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px;
+      background: #0A0C11; z-index: 10; transition: opacity .35s ease;
+    }
+    #boot.done { opacity: 0; pointer-events: none; }
+    #boot h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: .02em; color: #fff; }
+    #boot h2 { margin: -10px 0 0; font-size: 17px; font-weight: 700; color: #E8C11C; letter-spacing: .06em; }
+    /* the hazard stripe, borrowed from the game's own arena wall */
+    #hazard { width: 220px; height: 10px; overflow: hidden; position: relative; }
+    #hazard i { position: absolute; top: 0; bottom: 0; width: 22px; background: #E8C11C; transform: skewX(-24deg); }
+    #bar { width: 260px; height: 6px; background: #1B1F27; border-radius: 3px; overflow: hidden; }
+    #barfill { width: 0%; height: 100%; background: #E8C11C; transition: width .2s ease; }
+    #boot p { margin: 0; font-size: 13px; color: #7C8698; }
+    /* 2026-09-04: half of phone arrivals left during the download. A wait with
+       nothing to look at is a wait people leave; this is a fight to watch and
+       a tip to read, drawn in ~60 lines rather than shipped as an image. */
+    #warm { width: 320px; height: 120px; display: block; }
+    #tip { font-size: 13px; color: #A9B3C4; max-width: 320px; text-align: center; min-height: 36px; line-height: 1.35; }
+    #err { display: none; max-width: 520px; padding: 0 24px; text-align: center; color: #FF8A80; }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+  </div>
+
+  <div id="boot">
+    <h1>ROBOT BRAWL</h1>
+    <h2>BOLT &amp; BLADE</h2>
+    <canvas id="warm" width="640" height="240"></canvas>
+    <div id="hazard"></div>
+    <div id="bar"><div id="barfill"></div></div>
+    <p id="pct">loading…</p>
+    <p id="tip"></p>
+    <div id="err"></div>
+  </div>
+
+  <script>
+    // ── SOMETHING TO WATCH WHILE IT LOADS ────────────────────────────────
+    // Two robots charge, collide, spark, reset. Tips rotate underneath.
+    (function () {
+      var c = document.getElementById("warm"), g = c.getContext("2d");
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var W = c.width, H = c.height, t0 = null, sparks = [];
+      function bot(x, y, dir, body, accent) {
+        g.fillStyle = body; g.fillRect(x - 34, y - 26, 68, 26);            // frame
+        g.fillStyle = accent; g.fillRect(x - 14, y - 44, 28, 20);          // core
+        g.fillStyle = "#2A2E36";                                           // wheels
+        [[-24, 0], [24, 0]].forEach(function (w) { g.beginPath(); g.arc(x + w[0], y + 2, 12, 0, 6.283); g.fill(); });
+        g.fillStyle = "#B8C0CC"; g.beginPath();                            // spike
+        g.moveTo(x + dir * 34, y - 22); g.lineTo(x + dir * 58, y - 13); g.lineTo(x + dir * 34, y - 4); g.fill();
+      }
+      function frame(ts) {
+        if (t0 === null) t0 = ts;
+        var p = ((ts - t0) % 2600) / 2600;                                 // one bout per 2.6 s
+        var gap = p < 0.55 ? (1 - p / 0.55) : 0;                           // charge, then locked
+        var lx = W * 0.5 - 70 - gap * 200, rx = W * 0.5 + 70 + gap * 200, y = H * 0.62;
+        g.clearRect(0, 0, W, H);
+        g.fillStyle = "#151920"; g.fillRect(0, y + 14, W, 6);              // floor
+        g.fillStyle = "#E8C11C"; for (var i = 0; i < W; i += 40) g.fillRect(i, y + 14, 20, 6);
+        bot(lx, y, 1, "#D9DEE8", "#3F5D4B"); bot(rx, y, -1, "#C9CED8", "#8B3A3A");
+        if (p > 0.55 && p < 0.60 && sparks.length < 40)
+          for (var k = 0; k < 12; k++) sparks.push({ x: W * 0.5, y: y - 14, vx: (Math.random() - 0.5) * 9, vy: -Math.random() * 7, a: 1 });
+        for (var j = sparks.length - 1; j >= 0; j--) {
+          var s = sparks[j]; s.x += s.vx; s.y += s.vy; s.vy += 0.35; s.a -= 0.03;
+          if (s.a <= 0) { sparks.splice(j, 1); continue; }
+          g.fillStyle = "rgba(255,200,60," + s.a + ")"; g.fillRect(s.x, s.y, 4, 4);
+        }
+        if (!reduce) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      var tips = [
+        "Your robot HUNTS by compass - no driving needed.",
+        "Tap a part, then tap the robot: the first tap aims, the second bolts.",
+        "Losing pays: the Yard salvages rookies with a crate.",
+        "Welded seams hold 4x. Weld the spike.",
+        "Heavy parts mounted LOW keep a machine on its wheels.",
+        "Every finished task drops a box. Open it."
+      ];
+      var tipEl = document.getElementById("tip"), ti = Math.floor(Math.random() * tips.length);
+      tipEl.textContent = tips[ti];
+      setInterval(function () { ti = (ti + 1) % tips.length; tipEl.textContent = tips[ti]; }, 3500);
+    })();
+
+    // hazard stripe, drawn rather than shipped as an image
+    (function () {
+      var h = document.getElementById("hazard");
+      for (var i = -1; i < 12; i++) {
+        var s = document.createElement("i");
+        s.style.left = (i * 44) + "px";
+        h.appendChild(s);
+      }
+    })();
+
+
+    // ── VISIT COUNTER ────────────────────────────────────────────────────
+    // GitHub Pages keeps no access logs, so the page counts itself: one
+    // fire-and-forget request to OUR OWN api, whose Cloud Run request log
+    // becomes the counter. Deliberate design notes, because each is load-
+    // bearing and none is obvious:
+    //
+    //  * The path 404s ON PURPOSE. Nothing is written, no database is
+    //    touched, no endpoint has to exist or be maintained — Cloud Run logs
+    //    the request either way. The alert policy watches the 5xx RATE only
+    //    (server/scripts/gcp_monitoring.zsh), so a stream of 404s cannot page
+    //    anyone. The path is named to read as intentional in a log tail.
+    //  * mode:"no-cors" means we never read the response, so this needs no
+    //    CORS entry and cannot fail loudly.
+    //  * keepalive lets the "open" hit survive a visitor who leaves during
+    //    the 33 MB download — which is exactly the visitor we most want to
+    //    count.
+    //  * NO identifier of any kind is sent: no id, no cookie, no fingerprint.
+    //    The privacy policy promises "no third-party analytics, no tracking
+    //    across apps or websites" and this keeps that literally true.
+    var BEACON = "https://rb-api-902243335343.us-central1.run.app/v1/beacon/web-play";
+
+    // ── THE EPHEMERAL SESSION ID ─────────────────────────────────────────
+    // Generated here, held only in this closure, and never written to
+    // localStorage, a cookie, IndexedDB or anywhere else. It exists so the
+    // hits below can be grouped into a funnel — "did the person who opened
+    // the page also finish a fight" is unanswerable without it, and grouping
+    // by IP merges every phone behind one carrier NAT into a single fictional
+    // player. Because it is not persisted it CANNOT follow anyone across
+    // sessions, days or sites, which is what keeps the privacy policy's "no
+    // tracking across apps or websites" true as written.
+    var RBID = (function () {
+      try {
+        if (crypto && crypto.randomUUID) return crypto.randomUUID().slice(0, 8);
+        var a = new Uint8Array(4); crypto.getRandomValues(a);
+        return Array.from(a, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      } catch (e) { return "nocrypto"; }
+    })();
+
+    // The ONE place that knows how a hit is sent. Game code (via the
+    // rbbeacon.jslib shim) calls window.rbBeacon and never touches the URL.
+    function beacon(ev, extra) {
+      try {
+        fetch(BEACON + "?e=" + encodeURIComponent(ev) + "&i=" + RBID + (extra || ""),
+              { mode: "no-cors", keepalive: true, cache: "no-store" });
+      } catch (e) { /* counting must never break the game */ }
+    }
+    window.rbBeacon = beacon;
+
+    var tOpen = Date.now();
+    beacon("open");
+    // WHERE DID THEY GET TO? The funnel showed half of phone arrivals never
+    // reaching a playable game and could not say whether they LEFT or the
+    // tab DIED (2026-09-04). `phase` is the furthest point reached; it is
+    // sent once on pagehide via the keepalive fetch, so a bounce arrives as
+    // a `leave` carrying the phase and a crash arrives as silence.
+    var phase = "open", sentMilestone = {};
+    function milestone(m) { if (!sentMilestone[m]) { sentMilestone[m] = 1; phase = m; beacon("load", "&p=" + m); } }
+    var leaveSent = false;
+    function leave() { if (leaveSent) return; leaveSent = true; beacon("leave", "&at=" + phase + "&s=" + Math.round((Date.now() - tOpen) / 1000)); }
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") leave(); });
+    var jsErrSent = false;
+    window.addEventListener("error", function () { if (!jsErrSent) { jsErrSent = true; beacon("error", "&k=js&at=" + phase); } });
+
+    var canvas = document.querySelector("#unity-canvas");
+    var boot = document.getElementById("boot");
+    var fill = document.getElementById("barfill");
+    var pct  = document.getElementById("pct");
+    var err  = document.getElementById("err");
+
+    // ⚠ Unity 6 substitutes , NOT the older %UNITY_…% form.
+    // Using the old syntax produces a page that loads nothing and says
+    // nothing about why — the macros simply stay as literal text.
+    var buildUrl = "Build";
+    var config = {
+      arguments: [],
+      dataUrl: buildUrl + "/webgl.data.unityweb?v=0c5a4e815a",
+      frameworkUrl: buildUrl + "/webgl.framework.js.unityweb?v=0c5a4e815a",
+      codeUrl: buildUrl + "/webgl.wasm.unityweb?v=0c5a4e815a",
+      streamingAssetsUrl: "StreamingAssets",
+      // ⚠ WITHOUT THIS, THE PLAYER'S CAREER IS LOST ON RELOAD.
+      // Career.Save() is a bare File.WriteAllText to persistentDataPath. On
+      // WebGL that lands in an in-memory filesystem; it only reaches IndexedDB
+      // when something triggers a sync. Nothing in the game does — so a save
+      // survived only by luck, when an unrelated PlayerPrefs write happened to
+      // flush the whole FS. Measured 2026-09-01: built a robot, armed a
+      // program, fought a match, reloaded — career came back 0-0 with the
+      // career file stamped at the RELOAD, not at play. This flag makes Unity
+      // persist the directory on every file modification, which is the
+      // documented replacement for the manual JS_FileSystem_Sync call.
+      autoSyncPersistentDataPath: true,
+      companyName: "owen",
+      productName: "Robot Brawl: Bolt _ Blade",
+      productVersion: "2.1.1",
+      showBanner: function (msg, type) {
+        if (type === "error") { err.style.display = "block"; err.textContent = msg; beacon("error", "&k=banner&at=" + phase); }
+        else { console.log("[unity] " + msg); }
+      },
+    };
+
+    // Match the drawing buffer to the real viewport so the phone-shaped UI is
+    // laid out against the actual window rather than a fixed 960x600 box.
+    function fit() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width  = Math.floor(window.innerWidth  * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+    }
+    fit();
+    window.addEventListener("resize", fit);
+
+    var script = document.createElement("script");
+    script.src = buildUrl + "/webgl.loader.js?v=0c5a4e815a";
+    script.onload = function () {
+      createUnityInstance(canvas, config, function (p) {
+        var n = Math.round(p * 100);
+        if (n >= 25) milestone("25"); if (n >= 50) milestone("50"); if (n >= 75) milestone("75");
+        if (n >= 100) { phase = "starting"; }
+        fill.style.width = n + "%";
+        pct.textContent = n < 100 ? ("loading… " + n + "%") : "starting the engine… (on phones this is the slow part)";
+      }).then(function () {
+        // How many who opened the page actually got a playable game, and how
+        // long it took them. On a 33 MB payload this ratio is the single most
+        // useful number about the port.
+        phase = "ready";
+        beacon("ready", "&s=" + Math.round((Date.now() - tOpen) / 1000));
+        boot.classList.add("done");
+        setTimeout(function () { boot.style.display = "none"; }, 400);
+      }).catch(function (e) {
+        beacon("error", "&k=loader&at=" + phase);   // kind only - never the message
+        err.style.display = "block";
+        err.textContent = "Could not start: " + e;
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>

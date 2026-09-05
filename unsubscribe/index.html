@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unsubscribe — Cyberduck Club</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Remove your email address from the Robot Brawl mailing list.">
+<link rel="canonical" href="https://cyberduck.club/unsubscribe/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cyberduck Club">
+<meta property="og:title" content="Unsubscribe — Cyberduck Club">
+<meta property="og:description" content="Remove your address from the Robot Brawl mailing list.">
+<meta property="og:url" content="https://cyberduck.club/unsubscribe/">
+<meta property="og:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:image:alt" content="Spinner1 — a robot a player bolted together out of beams, blades and armour plate — rendered from its real parts.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unsubscribe — Cyberduck Club">
+<meta name="twitter:description" content="Remove your address from the Robot Brawl mailing list.">
+<meta name="twitter:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=20260901a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✉️</text></svg>">
+<style>
+  .unsub{max-width:56ch}
+  .unsub form{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
+  .unsub input{flex:1 1 260px;min-width:0;background:#0e1117;color:#e9edf3;
+    border:2px solid #6B7080;border-radius:9px;padding:12px 13px;font:inherit;font-size:1rem}
+  .unsub input:focus{outline:none;border-color:#8ea2ff}
+  .unsub button{background:#3358f4;color:#fff;border:0;border-radius:9px;padding:12px 20px;
+    font:inherit;font-weight:700;font-size:1rem;cursor:pointer;min-height:46px}
+  .unsub button[disabled]{opacity:.6;cursor:default}
+  .unsub .msg{margin:16px 0 0;line-height:1.55}
+  .unsub .msg.err{color:#ffb4a8}
+  .unsub .ok{color:#5fd08a;font-weight:700}
+  /* ⚠ SAME BUG AS THE SIGNUP FORM, AND IT WAS MISSED BECAUSE THE FIX WAS
+     SCOPED TO THAT FORM. flex-basis is on the MAIN axis; this query flips the
+     axis to vertical, so `flex:1 1 260px` renders a 260px-TALL input. This is
+     the page every email will link to. */
+  @media (max-width:520px){.unsub form{flex-direction:column}
+    .unsub input{flex:0 0 auto}
+    .unsub input,.unsub button{width:100%}}
+</style>
+</head>
+<body>
+<header class="site">
+  <nav class="nav">
+    <a class="brand" href="/">CYBER<span class="duck">DUCK</span> CLUB</a>
+    <span class="spacer"></span>
+    <a class="link play" href="/play/rb/">Play free</a>
+    <a class="link" href="/robot-brawl/">Robot Brawl</a>
+    <a class="link" href="/how-to-play/">How to Play</a>
+    <a class="link" href="/champions/">Champions</a>
+    <a class="link" href="/support/">Support</a>
+    <a class="link" href="/privacy/">Privacy</a>
+  </nav>
+</header>
+
+<main class="wrap prose unsub">
+  <section class="hero" style="padding-bottom:10px">
+    <h1>Unsubscribe</h1>
+    <p class="lede">Enter the address you signed up with and we will take it off the
+    Robot Brawl mailing list. No sign-in, no confirmation email, no questions.</p>
+    <div class="hazard"></div>
+  </section>
+
+  <form id="f" novalidate>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email"
+           aria-label="Your email address" required>
+    <button type="submit" id="go">Unsubscribe</button>
+  </form>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+
+  <p style="color:#7f8797;font-size:.85rem;margin-top:26px">
+    This removes you from launch and season emails. It does not touch a Robot Brawl
+    game account if you have one — those are separate, and you can delete an account
+    from inside the game. See the <a href="/privacy/">privacy policy</a>, or email
+    <a href="mailto:admin@cyberduck.club">admin@cyberduck.club</a>.
+  </p>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2026 Cyberduck Club</span>
+    <span class="spacer"></span>
+    <a href="/robot-brawl/">Robot Brawl</a>
+    <a href="/how-to-play/">How to Play</a>
+    <a href="/champions/">Champions</a>
+    <a href="/support/">Support</a>
+    <a href="mailto:admin@cyberduck.club">admin@cyberduck.club</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var API = LOCAL ? "http://localhost:5099"
+                  : "https://rb-api-902243335343.us-central1.run.app";
+  var f = document.getElementById("f"), input = document.getElementById("email"),
+      go = document.getElementById("go"), msg = document.getElementById("msg");
+
+  // A link in an email can carry the address so the visitor does not retype
+  // it: /unsubscribe/?e=<address>. Prefilled, never auto-submitted — a mail
+  // client that prefetches links would otherwise unsubscribe people who only
+  // ever received the email.
+  try {
+    var e = new URLSearchParams(location.search).get("e");
+    if (e) input.value = e;
+  } catch (_) {}
+
+  function say(t, err) { msg.textContent = t; msg.className = "msg" + (err ? " err" : ""); }
+
+  f.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var addr = (input.value || "").trim();
+    if (addr.length < 3 || addr.indexOf("@") < 0) { say("That does not look like an email address.", true); return; }
+    go.disabled = true;
+    say("Removing you…", false);
+    fetch(API + "/v1/subscribers/unsubscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: addr })
+    }).then(function (r) {
+      if (!r.ok) throw new Error("http " + r.status);
+      f.style.display = "none";
+      msg.innerHTML = '<span class="ok">Done.</span> ' + addr.replace(/[<>&]/g, "") +
+        ' will not receive any more email from us.';
+      msg.className = "msg";
+    }).catch(function () {
+      go.disabled = false;
+      // Never claim success we did not get. Someone who is told they are off
+      // the list and then gets another email has been lied to.
+      say("Could not reach the server, so you are still subscribed. Please try again, " +
+          "or email admin@cyberduck.club and we will remove you by hand.", true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

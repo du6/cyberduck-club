@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot Brawl: Bolt &amp; Blade — build, program, fight</title>
+<meta name="description" content="Build physics robots part by part, program their brains, and fight on a live online ladder with seasons, ratings, and replays. Free on iPhone and iPad. No ads.">
+<link rel="canonical" href="https://cyberduck.club/robot-brawl/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cyberduck Club">
+<meta property="og:title" content="Robot Brawl: Bolt & Blade — build it, program it, fight it">
+<meta property="og:description" content="Bolt parts onto a chassis, program its brain, and climb an online ladder where every ranked match is refereed server-side and leaves a replay.">
+<meta property="og:url" content="https://cyberduck.club/robot-brawl/">
+<meta property="og:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:image:alt" content="Spinner1 — a robot a player bolted together out of beams, blades and armour plate — rendered from its real parts.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Robot Brawl: Bolt & Blade — build it, program it, fight it">
+<meta name="twitter:description" content="Bolt parts onto a chassis, program its brain, and climb an online ladder where every ranked match is refereed server-side and leaves a replay.">
+<meta name="twitter:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=20260901a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+<header class="site">
+  <nav class="nav">
+    <a class="brand" href="/">CYBER<span class="duck">DUCK</span> CLUB</a>
+    <span class="spacer"></span>
+    <a class="link play" href="/play/rb/">Play free</a>
+    <a class="link" href="/robot-brawl/">Robot Brawl</a>
+    <a class="link" href="/how-to-play/">How to Play</a>
+    <a class="link" href="/champions/">Champions</a>
+    <a class="link" href="/support/">Support</a>
+    <a class="link" href="/privacy/">Privacy</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="kicker">iPhone &amp; iPad · Free · No ads</p>
+    <h1>Robot Brawl: Bolt &amp; Blade</h1>
+    <p class="lede">Bolt it together. Program its brain. Watch it fight —
+    and answer for every design decision you made.</p>
+    <div class="hazard"></div>
+    <div class="herocta">
+      <!-- The hero email form left on 2026-08-27 (owen): launched, the
+           download link below is the CTA; the subscribe widget at the
+           bottom of the page is the one signup form. -->
+      <p class="fine">Play in your browser with no install and no account, or get it for iPhone &amp; iPad. Free · No ads.</p>
+    </div>
+    <p style="margin-top:14px">
+      <a class="btn" href="/play/rb/">Play free in your browser</a>
+      <a id="store-btn" class="btn ghost" href="https://apps.apple.com/app/id6801680303" rel="noopener">Download on the App Store — Free</a>
+      <a class="btn ghost" href="/how-to-play/">How to play →</a>
+      <a class="btn ghost" href="#board">Live leaderboard ↓</a>
+      <a class="btn ghost" href="/champions/">Today's champions in 3D →</a>
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>The whole machine is yours to answer for</h2>
+    <div class="grid cols-3">
+      <div class="card"><h3>Build with real physics</h3><p>Cores, beams, wheels, spinners, rams, hooks, armor — every part has mass and a weld point. A top-heavy build tips. A nose-heavy ram digs in. The scale never lies.</p></div>
+      <div class="card"><h3>Program the brain</h3><p>Wire up sensors — compass trackers, rangefinders, wall sensors — and sequence behaviours on the program canvas. In autonomy fights your code does the driving, not your thumbs.</p></div>
+      <div class="card"><h3>Fight for rank</h3><p>Five career leagues, then the online arena: five weight classes, seasonal ratings, and server-refereed ranked matches. Every fight leaves a replay you can study.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>In the garage and the arena</h2>
+    <div class="shots">
+      <figure><img src="/assets/img/league.jpg" alt="League screen with trophy case and contest list" loading="lazy"><figcaption>Career leagues — scout the opponent, then fight manually or let your program drive.</figcaption></figure>
+      <figure><img src="/assets/img/enlist.jpg" alt="Enlisting a robot on the online ladder" loading="lazy"><figcaption>The online arena — enlist a saved robot, then scout and challenge. Every ranked match is refereed server-side.</figcaption></figure>
+      <figure><img src="/assets/img/shop.jpg" alt="Parts shop" loading="lazy"><figcaption>Spend scrap on parts. Every purchase is a design commitment.</figcaption></figure>
+      <figure><img src="/assets/img/replay.jpg" alt="Match replay" loading="lazy"><figcaption>Replays for every ranked match — see exactly why you won or lost.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="section" id="board">
+    <p class="kicker">Season <span id="season-num">1</span> · live from the arena</p>
+    <h2>Leaderboard</h2>
+    <!-- A short board is not a weakness to hide, it is an opening to offer.
+         Naming the unclaimed classes converts better than padding the table
+         with house bots and bench fixtures. -->
+    <p class="lede" style="margin-top:-4px">Season 1 is young — most classes are still
+    unclaimed. Every robot below was built and enlisted by a player, and every match
+    behind these ratings was refereed server-side with a replay you can watch.</p>
+    <div class="chips" id="cat-chips">
+      <button data-cat="ALL" class="on">All</button>
+      <button data-cat="FEATHER">Feather</button>
+      <button data-cat="LIGHT">Light</button>
+      <button data-cat="MIDDLE">Middle</button>
+      <button data-cat="HEAVY">Heavy</button>
+      <button data-cat="SUPER">Super</button>
+    </div>
+    <div class="card" style="padding: 8px 14px 14px; overflow-x: auto;">
+      <table class="board">
+        <thead><tr><th>#</th><th>Robot</th><th>Pilot</th><th>Class</th><th style="text-align:right">Rating</th></tr></thead>
+        <tbody id="board-body"><tr><td colspan="5" style="color:var(--ink-dim)">Loading the board…</td></tr></tbody>
+      </table>
+    </div>
+    <p class="board-note" id="board-note"></p>
+  </section>
+
+  <section class="section">
+    <h2>Fair play, plainly stated</h2>
+    <div class="grid cols-2">
+      <div class="card"><h3>Server-refereed</h3><p>Ranked fights run on our servers, not your opponent's phone. Same physics for everyone; nobody's device gets to be the judge.</p></div>
+      <div class="card"><h3>No ads, no tracking</h3><p>Free means free. No advertising identifiers, no third-party analytics, no data sold. <a href="/privacy/">The privacy policy</a> fits on one page.</p></div>
+    </div>
+  </section>
+  <div class="subscribe-mount" data-source="robot-brawl"></div>
+  <div class="promowrap">
+    <video class="promo" data-has-audio="1" controls playsinline preload="none"
+           poster="/assets/video/robot-brawl-promo-poster.jpg"
+           data-src-1080="/assets/video/robot-brawl-promo-1080.mp4"
+           data-src-720="/assets/video/robot-brawl-promo-720.mp4"
+           aria-label="Robot Brawl: Bolt &amp; Blade — 27 second promo with music">
+      <source src="/assets/video/robot-brawl-promo-1080.mp4" type="video/mp4">
+      Your browser cannot play this video.
+      <a href="/assets/video/robot-brawl-promo-720.mp4">Download it instead</a>.
+    </video>
+    <p class="promocap">27 seconds, with the game's own fight theme. Every 3D shot is real: five recorded
+    matches, including a machine thrown five metres into the air, built from the same machines the
+    <a href="/champions/">champions page</a> renders.</p>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2026 Cyberduck Club</span>
+    <span class="spacer"></span>
+    <a href="/how-to-play/">How to Play</a>
+    <a href="/support/">Support</a>
+    <a href="/privacy/">Privacy</a>
+    <a href="mailto:admin@cyberduck.club">admin@cyberduck.club</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var API = "https://rb-api-902243335343.us-central1.run.app/v1/leaderboard";
+  var APP_ID = "6801680303";
+  var STORE_URL = "https://apps.apple.com/app/id" + APP_ID;
+
+  // ---- Snapshot fallback (baked at build time; replaced by live data when the API allows it)
+  var SNAPSHOT_TAKEN = "2026-08-20";
+  var snapshot = {"season":1,"entries":[
+    {"rank":1,"category":"SUPER","rating":2045,"provisional":true,"robotName":"Spinner1","owner":"Owen"},
+    {"rank":2,"category":"FEATHER","rating":1861,"provisional":true,"robotName":"bulwark","owner":"BOSSLeon"},
+    {"rank":3,"category":"FEATHER","rating":1671,"provisional":false,"robotName":"Spinner1","owner":"Owen"},
+    {"rank":4,"category":"FEATHER","rating":1664,"provisional":true,"robotName":"hunter","owner":"BOSSLeon"},
+    {"rank":5,"category":"SUPER","rating":1574,"provisional":true,"robotName":"bulwark","owner":"BOSSLeon"},
+    {"rank":6,"category":"HEAVY","rating":1526,"provisional":true,"robotName":"Spinner1","owner":"Owen"},
+    {"rank":7,"category":"LIGHT","rating":1524,"provisional":true,"robotName":"Hammer","owner":"BOSSLeon"},
+    {"rank":8,"category":"FEATHER","rating":1276,"provisional":true,"robotName":"Grinder","owner":"Grinder Pilot"},
+    {"rank":9,"category":"FEATHER","rating":1267,"provisional":true,"robotName":"SecondEnlistee","owner":"Rival"},
+    {"rank":10,"category":"FEATHER","rating":1218,"provisional":true,"robotName":"ThirdEnlistee","owner":"Challenger"},
+    {"rank":11,"category":"HEAVY","rating":1200,"provisional":true,"robotName":"HOUSE Boiler","owner":"The Yard"},
+    {"rank":12,"category":"SUPER","rating":1200,"provisional":true,"robotName":"HOUSE Foundry","owner":"The Yard"},
+    {"rank":13,"category":"SUPER","rating":1200,"provisional":true,"robotName":"HOUSE Monolith","owner":"The Yard"},
+    {"rank":14,"category":"MIDDLE","rating":1200,"provisional":true,"robotName":"HOUSE Girder","owner":"The Yard"},
+    {"rank":15,"category":"MIDDLE","rating":1200,"provisional":true,"robotName":"HOUSE Anvil","owner":"The Yard"},
+    {"rank":16,"category":"HEAVY","rating":1200,"provisional":true,"robotName":"HOUSE Flatbed","owner":"The Yard"},
+    {"rank":17,"category":"LIGHT","rating":1200,"provisional":true,"robotName":"HOUSE Crowbar","owner":"The Yard"},
+    {"rank":18,"category":"LIGHT","rating":1200,"provisional":true,"robotName":"HOUSE Piston","owner":"The Yard"},
+    {"rank":19,"category":"FEATHER","rating":1200,"provisional":true,"robotName":"HOUSE Bolt","owner":"The Yard"},
+    {"rank":20,"category":"FEATHER","rating":1200,"provisional":true,"robotName":"HOUSE Tinplate","owner":"The Yard"},
+    {"rank":21,"category":"FEATHER","rating":1200,"provisional":true,"robotName":"BuiltInTheCloud","owner":"ContainerTest"},
+    {"rank":22,"category":"FEATHER","rating":1094,"provisional":true,"robotName":"flipper_v2","owner":"BOSSLeon"},
+    {"rank":23,"category":"FEATHER","rating":1079,"provisional":true,"robotName":"Hammer","owner":"BOSSLeon"},
+    {"rank":24,"category":"FEATHER","rating":1038,"provisional":true,"robotName":"Piston","owner":"Piston Pilot"}
+  ]};
+
+  var current = { data: null, live: false, cat: "ALL" };
+
+  // ⚠ THE DEV LADDER AND THE PUBLIC LADDER ARE THE SAME LADDER, and this page
+  // is marketing. Bench and container fixtures are real rows with real
+  // ratings — they are not fake data — but "SecondEnlistee owned by Rival"
+  // and "BuiltInTheCloud owned by ContainerTest" read to a stranger as a game
+  // nobody plays, and they were a third of the board.
+  //
+  // Filtering here is the WEBSITE-side fix and it is deliberately narrow: an
+  // exact-match list, so a real player who happens to name a robot "Grinder"
+  // is never silently hidden. The durable fix is retiring these robots on the
+  // server; until that happens this keeps them off the shop window. If you
+  // retire them, delete this list rather than leaving it to hide something
+  // else by accident later.
+  var FIXTURES = {
+    "SecondEnlistee": 1, "ThirdEnlistee": 1, "BuiltInTheCloud": 1
+  };
+  var FIXTURE_OWNERS = { "ContainerTest": 1, "Rival": 1, "Challenger": 1 };
+  // The game ships ten house robots and they all sit at a flat 1200. They are
+  // real rows, but a public board that is 10/24 house bots and 3/24 fixtures
+  // reads as "nobody plays this" — which is the opposite of what a live
+  // ladder is here to prove.
+  var HOUSE_OWNER = "The Yard";
+  var PUBLIC_ROWS = 8;
+  function clean(data) {
+    if (!data || !data.entries) return data;
+    var kept = data.entries.filter(function (e) {
+      return !FIXTURES[e.robotName] && !FIXTURE_OWNERS[e.owner] &&
+             !/^BenchBot-/.test(e.robotName || "") &&
+             e.owner !== HOUSE_OWNER &&
+             // "Grinder Pilot" flying "Grinder" is the bench harness's naming
+             // pattern, not a person.
+             !(e.owner && e.robotName && e.owner === e.robotName + " Pilot");
+    });
+    // ⚠ ONE ENTRY PER PILOT PER CLASS. Without this the board showed the same
+    // pilot three times in LIGHT and twice in FEATHER — five of eight rows
+    // were one person's other robots, which reads as padding even though
+    // every row is a genuine ranked entry. Entries arrive best-first, so the
+    // first one seen for a pilot in a class is the one worth showing.
+    var seen = {};
+    kept = kept.filter(function (e) {
+      var k = (e.owner || "") + "|" + (e.category || "");
+      if (seen[k]) return false;
+      seen[k] = 1; return true;
+    }).slice(0, PUBLIC_ROWS);
+    // Ranks are re-numbered so the board does not show 1,2,3,5,6 — a gap
+    // invites the reader to wonder what was removed.
+    kept.forEach(function (e, i) { e.rank = i + 1; });
+    return { season: data.season, entries: kept };
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function render() {
+    var body = document.getElementById("board-body");
+    var note = document.getElementById("board-note");
+    var entries = current.data.entries.filter(function (e) {
+      return current.cat === "ALL" || e.category === current.cat;
+    });
+    if (!entries.length) {
+      body.innerHTML = '<tr><td colspan="5" style="color:var(--ink-dim)">No robots in this class yet — yours could be first.</td></tr>';
+    } else {
+      body.innerHTML = entries.map(function (e, i) {
+        var shownRank = current.cat === "ALL" ? e.rank : i + 1;
+        return "<tr><td class='num'>" + shownRank + "</td><td><strong>" + esc(e.robotName) + "</strong>" +
+          /* "(provisional)" is an INTERNAL confidence signal — it means "few
+             games played yet". On a public board it reads as "not a real
+             result", and it was on 23 of 24 rows. Deliberately not shown. */
+          "" +
+          "</td><td>" + esc(e.owner) + "</td><td><span class='chip'>" + esc(e.category) + "</span></td>" +
+          "<td class='num' style='text-align:right'>" + Math.round(e.rating) + "</td></tr>";
+      }).join("");
+    }
+    if (current.data.season) document.getElementById("season-num").textContent = current.data.season;
+    note.textContent = current.live
+      ? "Live ratings from the arena. Provisional means fewer fights than the referee needs to be sure."
+      : "Board snapshot from " + SNAPSHOT_TAKEN + " — live ratings are temporarily unreachable. Provisional means fewer fights than the referee needs to be sure.";
+  }
+
+  document.getElementById("cat-chips").addEventListener("click", function (ev) {
+    var b = ev.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    current.cat = b.getAttribute("data-cat");
+    render();
+  });
+
+  current.data = clean(snapshot); render();
+  fetch(API).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (json) { if (json && json.entries) { current.data = clean(json); current.live = true; render(); } })
+    .catch(function () { /* snapshot stays */ });
+
+  // ---- App Store button: statically live since 2026-08-27 (1.0 released).
+  // The lookup below is kept as a self-heal: it rewrites the button to the
+  // same live state, so a stale cached page also ends up correct.
+  window.__itunesCb = function (json) {
+    if (json && json.resultCount > 0) {
+      var b = document.getElementById("store-btn");
+      b.removeAttribute("aria-disabled");
+      b.href = STORE_URL;
+      b.textContent = "Download on the App Store — Free";
+    }
+  };
+  var s = document.createElement("script");
+  s.src = "https://itunes.apple.com/lookup?id=" + APP_ID + "&callback=__itunesCb";
+  document.head.appendChild(s);
+})();
+</script>
+<script src="/assets/subscribe.js?v=20260901a" defer></script>
+<script src="/assets/promo.js?v=20260819a" defer></script>
+</body>
+</html>

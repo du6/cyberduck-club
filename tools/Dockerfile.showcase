@@ -1,0 +1,22 @@
+# The champions-showcase refresher (Cloud Run Job: rb-showcase).
+#
+# Deliberately tiny: the baker is pure stdlib Python over public HTTP, so the
+# only thing this image needs beyond python is git (to push one file) and CA
+# certificates (to reach api.github.com and the ladder over TLS).
+#
+# No credentials are baked in. GH_TOKEN arrives at runtime from Secret
+# Manager; see server/scripts/deploy_showcase.zsh.
+FROM python:3.12-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY website/tools/bake_showcase.py        /app/bake_showcase.py
+COPY website/tools/refresh_showcase_cloud.py /app/refresh_showcase_cloud.py
+
+# Cloud Run Jobs run as root by default, but the scratch dir this writes to is
+# a mkdtemp under /tmp either way, so nothing here needs write access to /app.
+ENV PYTHONUNBUFFERED=1
+ENTRYPOINT ["python3", "/app/refresh_showcase_cloud.py"]

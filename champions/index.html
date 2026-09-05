@@ -1,0 +1,2146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Champions — Robot Brawl: Bolt &amp; Blade</title>
+<meta name="description" content="The reigning robot in every weight class of the Robot Brawl online ladder — the real machine in 3D, and one of the heaviest blows of the fight that won it, replayed from the match record. Updated daily.">
+<link rel="canonical" href="https://cyberduck.club/champions/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cyberduck Club">
+<meta property="og:title" content="Champions — Robot Brawl: Bolt & Blade">
+<meta property="og:description" content="The reigning machine in every weight class, in 3D, with the biggest blow of the fight that won it.">
+<meta property="og:url" content="https://cyberduck.club/champions/">
+<meta property="og:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:image:alt" content="Spinner1 — a robot a player bolted together out of beams, blades and armour plate — rendered from its real parts.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Champions — Robot Brawl: Bolt & Blade">
+<meta name="twitter:description" content="The reigning machine in every weight class, in 3D, with the biggest blow of the fight that won it.">
+<meta name="twitter:image" content="https://cyberduck.club/assets/img/share-machine.jpg">
+<link rel="stylesheet" href="/assets/style.css?v=20260901a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<style>
+  .ctarow { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:0 0 6px; }
+  .ctasub { color:var(--ink-dim); font-size:.84rem; margin:2px 0 0; }
+  .classtabs { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 14px; }
+  .classtabs button { background:#191d26; color:var(--ink-dim); border:1px solid #2a2f3b;
+    border-radius:999px; padding:7px 16px 8px; font:inherit; font-size:.92rem; cursor:pointer;
+    line-height:1.15; text-align:left; }
+  .classtabs button.on { background:#1d4ed8; border-color:#2f6bff; color:#fff; }
+  .classtabs button b { display:block; font-size:.92rem; font-weight:700; letter-spacing:.4px; }
+  .classtabs button small { display:block; font-size:.72rem; opacity:.72; font-weight:500; }
+  /* ⚠ minmax(0,…), not 1fr. A grid track's implicit minimum is min-content, and
+     the stage's min-content width is set by its aspect-ratio against its
+     min-height — so the track grew to 427 px inside a 390 px phone and the page
+     scrolled sideways even with width:100% on the stage itself. */
+  .champ { display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }
+  @media (min-width:900px){ .champ { grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr); align-items:start; } }
+  .stage { position:relative; background:#0c0f15; border:1px solid #242a36; border-radius:14px;
+    overflow:hidden; aspect-ratio:16/10; }
+  .stage canvas { display:block; width:100%; height:100%; }
+  .stagebar { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:10px;
+    padding:10px 12px; background:linear-gradient(transparent,rgba(6,8,12,.86) 42%); }
+  .stagebar button { background:#232936; color:#e8ecf4; border:1px solid #333b4b; border-radius:8px;
+    padding:7px 13px; font:inherit; font-size:.86rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .stagebar button.on { background:#1d4ed8; border-color:#2f6bff; }
+  .scrub { flex:1; min-width:60px; accent-color:#2f6bff; }
+  .stagenote { position:absolute; top:10px; left:12px; font-size:.76rem; color:#c3cbd9; letter-spacing:.6px;
+    background:rgba(8,10,15,.72); padding:4px 9px; border-radius:6px; font-weight:600; z-index:2; }
+  /* A failed 3D boot must never be an empty black box — on a phone that is the
+     only thing the viewer can see, and it is unreportable. */
+  .stagefail { position:absolute; inset:auto 12px 56px 12px; z-index:3; display:flex; flex-direction:column; gap:6px;
+    background:rgba(8,10,15,.92); border:1px solid #3a4050; border-radius:8px; padding:12px 14px;
+    color:#e6ebf2; font-size:.78rem; line-height:1.45; word-break:break-word; text-align:left; }
+  .stagefail b { font-size:.86rem; }
+  .stagefail span { color:#9aa4b4; font-family:ui-monospace,Menlo,monospace; font-size:.68rem; }
+  .stagefail.soft { inset:auto 12px 56px auto; padding:5px 9px; border-color:#2b3040; }
+  .stagefail.soft span { color:#7f8797; font-family:inherit; }
+  .replaychip { position:absolute; top:10px; right:12px; font-size:.74rem; font-weight:800; letter-spacing:1.2px;
+    color:#101418; background:var(--accent); padding:4px 10px; border-radius:6px; opacity:0;
+    pointer-events:none; z-index:3; }
+  .fadeover { position:absolute; inset:0; background:#0c0f15; opacity:0; pointer-events:none; z-index:1; }
+  .orbithint { color:#6d7686; font-size:.76rem; margin:8px 2px 0; }
+  .statline { display:flex; flex-wrap:wrap; gap:6px 18px; color:var(--ink-dim); font-size:.9rem; margin:6px 0 0; }
+  .fightstats { color:var(--ink-dim); font-size:.86rem; margin:.5em 0 0; font-variant-numeric:tabular-nums; }
+  .sidekey { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; color:var(--ink-dim); margin-right:14px; }
+  .sidekey i { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .partshead { font-size:.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--ink-dim);
+    font-weight:700; margin:18px 0 8px; }
+  .partlist { display:flex; flex-wrap:wrap; gap:6px; }
+  .unclaimed { border:2px dashed #6b5a1e; border-radius:14px; padding:26px 24px;
+    background:linear-gradient(180deg,rgba(245,197,24,.06),rgba(245,197,24,0)); }
+  .unclaimed h2 { font-size:32px; line-height:1.1; margin:.1em 0 .3em; letter-spacing:-.5px; }
+  .unclaimed p { color:var(--ink-dim); max-width:620px; }
+  .stamp { font-size:.82rem; color:#7b8496; margin-top:26px; }
+  .stickycta { display:none; }
+  @media (max-width:560px){
+    /* ⚠ NOT THIS PAGE'S BUG, BUT THIS PAGE'S PROBLEM. The shared .nav in
+       /assets/style.css is a single non-wrapping flex row: at 390 px it runs to
+       466 px and scrolls the WHOLE document sideways, which no amount of care
+       inside the panel can undo. Overridden here only — the same fix belongs in
+       assets/style.css for every page, which is not this round's file. */
+    .nav { flex-wrap:wrap; gap:10px 18px; padding:12px 20px; }
+    .hero { padding:26px 0 14px; }
+    .hero h1 { font-size:32px; }
+    .hero p.lede { font-size:17px; margin-bottom:18px; }
+    .hero .hazard { margin:16px 0; }
+    /* ⚠ WIDTH MUST BE EXPLICIT HERE. With only `aspect-ratio` and a
+       `min-height`, the height becomes the definite side and the ASPECT RATIO
+       computes the width from it: at 390 px the stage came out 427 px wide and
+       the whole page scrolled sideways. */
+    .stage { aspect-ratio:4/3; min-height:320px; width:100%; }
+    .stagebar { gap:6px; padding:8px 9px; }
+    .stagebar button { padding:8px 10px; font-size:.76rem; }
+    .unclaimed h2 { font-size:26px; }
+    body { padding-bottom:76px; }
+    .stickycta { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:20; gap:10px;
+      align-items:center; padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(13,16,23,.96); border-top:1px solid var(--line); backdrop-filter:blur(8px); }
+    .stickycta .btn { flex:1; text-align:center; padding:12px 10px; }
+  }
+</style>
+</head>
+<body>
+<header class="site">
+  <nav class="nav">
+    <a class="brand" href="/">CYBER<span class="duck">DUCK</span> CLUB</a>
+    <span class="spacer"></span>
+    <a class="link play" href="/play/rb/">Play free</a>
+    <a class="link" href="/robot-brawl/">Robot Brawl</a>
+    <a class="link" href="/how-to-play/">How to Play</a>
+    <a class="link" href="/champions/">Champions</a>
+    <a class="link" href="/support/">Support</a>
+    <a class="link" href="/privacy/">Privacy</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="hero" style="padding-bottom:10px">
+    <p class="kicker">Season <span id="season">1</span> · the reigning machines</p>
+    <h1>Champions</h1>
+    <!-- ⚠ THIS CLAIM USED TO OVERSTATE ITSELF ON ITS OWN PAGE. It said the
+         machines "went out and won" against players, but three of five cards
+         are headed "First to beat the house machine" — they beat a bot the
+         game ships with — and MIDDLE's holder IS a house bot. Only FEATHER is
+         a player-versus-player result. And "the biggest blow" disagreed with
+         the footer's own "one of the fight's heaviest hits"; the footer was
+         right, because the baker deliberately avoids a finishing blow. -->
+    <p class="lede">Every machine here was bolted together by a player out of beams, blades and
+    spikes — then it went out and took its class. This is the real build, in 3D, and one of the
+    heaviest hits of the fight that took it, with the seconds either side.</p>
+    <div class="ctarow">
+      <a class="btn store-btn" href="https://apps.apple.com/app/id6801680303" rel="noopener">Download on the App Store — Free</a>
+      <a class="btn ghost" href="#notify">Email me game news →</a>
+      <a class="btn ghost" href="/robot-brawl/">How the ladder works →</a>
+    </div>
+    <p class="ctasub">iPhone &amp; iPad · Free · No ads</p>
+    <div class="hazard"></div>
+  </section>
+
+  <div class="classtabs" id="tabs"></div>
+  <div id="panel"></div>
+  <div id="notify" class="subscribe-mount" data-source="champions"></div>
+  <p class="stamp" id="stamp"></p>
+</main>
+
+<div class="stickycta">
+  <!-- Launched 2026-08-27: the persistent slot now holds the action that
+       matters. (Pre-launch it held the notify link, because a button that
+       cannot be pressed is the worst possible occupant of this bar.) -->
+  <a class="btn store-btn" href="https://apps.apple.com/app/id6801680303" rel="noopener">Download on the App Store — Free</a>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2026 Cyberduck Club</span>
+    <span class="spacer"></span>
+    <a href="/robot-brawl/">Robot Brawl</a>
+    <a href="/how-to-play/">How to Play</a>
+    <a href="/support/">Support</a>
+    <a href="/privacy/">Privacy</a>
+    <a href="mailto:admin@cyberduck.club">admin@cyberduck.club</a>
+  </div>
+</footer>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+
+<script>
+// ---- App Store button. THE APP IS IN REVIEW AND NOT YET DOWNLOADABLE, so the
+// button ships DISABLED and says so. The moment Apple publishes the listing the
+// iTunes lookup starts returning a result and every button on the page flips to
+// a live link without a redeploy. Same pattern as /robot-brawl/ — keep them in
+// step. Do NOT hard-code a live store link here; it would 404 until release.
+(function () {
+  var APP_ID = "6801680303";
+  var STORE_URL = "https://apps.apple.com/app/id" + APP_ID;
+  window.__storeLive = false;
+  window.__syncStore = function () {
+    if (!window.__storeLive) return;
+    document.querySelectorAll("a.store-btn").forEach(function (b) {
+      b.removeAttribute("aria-disabled");
+      b.href = STORE_URL;
+      b.textContent = "Download on the App Store — Free";
+    });
+  };
+  window.__itunesCb = function (json) {
+    if (json && json.resultCount > 0) { window.__storeLive = true; window.__syncStore(); }
+  };
+  // A disabled CTA must not jump the page to the top when it is tapped.
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("a.store-btn");
+    if (a && a.getAttribute("aria-disabled") === "true") ev.preventDefault();
+  });
+  var s = document.createElement("script");
+  s.src = "https://itunes.apple.com/lookup?id=" + APP_ID + "&callback=__itunesCb";
+  s.onerror = function () { /* offline or blocked: the button stays honest */ };
+  document.head.appendChild(s);
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+// ---------------------------------------------------------------- data load
+const [showcase, partTable] = await Promise.all([
+  // ⚠ REVALIDATE. Both of these change UNDER a page that does not: the HTML is
+  // edited rarely, showcase.json is rebuilt DAILY, and parts.json changes
+  // whenever the game's parts do. With the default policy a returning visitor
+  // keeps whatever the browser cached and sees last week's champions on a page
+  // whose whole premise is that it is current — and there is nothing on screen
+  // to reveal it. It bit during development too: the square-wheel fix looked
+  // like it had failed because the corrected parts.json was on the server and
+  // the stale one was in the browser.
+  // 'no-cache' still uses the cache, it just checks first — a 304 on an
+  // unchanged file, so the cost is one conditional request, not a re-download.
+  fetch('/data/showcase.json', { cache: 'no-cache' }).then(r => r.json()),
+  fetch('/data/parts.json', { cache: 'no-cache' }).then(r => r.json()),
+]).catch(() => [null, null]);
+
+const panel = document.getElementById('panel');
+const tabsEl = document.getElementById('tabs');
+let live = null;   // { dispose() } for the running scene
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// The game colour-codes the sides cyan and orange; the page has to agree, or
+// the viewer learns one convention on a screenshot and another here.
+const CHAMP_COL = '#FF7A18', FOE_COL = '#19C6FF';
+
+// ⚠ BOOT RUNS AT THE BOTTOM OF THIS MODULE, not here. `const`/`let` are not
+// initialised until their declaration is evaluated, so calling select() from
+// up here reaches `esc` and `live` inside their temporal dead zone and the
+// whole panel renders empty with only a console trace to show for it — which
+// is exactly what the first load did, twice.
+
+function buildTabs() {
+  showcase.champions.forEach((c, i) => {
+    const b = document.createElement('button');
+    // ⚠ THE CHIP CONTRADICTED THE CARD IT OPENS. A class still held by a
+    // house robot rendered as "MIDDLE — HOUSE Anvil · 1200", which reads as a
+    // champion, and then opened a card headed "NOBODY OWNS MIDDLEWEIGHT."
+    // Both cannot be true on one screen. `house` is already in the data.
+    b.innerHTML = c.house
+      ? `<b>${esc(c.category)}</b><small>unclaimed</small>`
+      : `<b>${esc(c.category)}</b><small>${esc(c.robotName)} · ${Math.round(c.rating)}</small>`;
+    b.onclick = () => { select(i); };
+    tabsEl.appendChild(b);
+  });
+  select(0);
+}
+
+function select(i) {
+  [...tabsEl.children].forEach((b, j) => b.classList.toggle('on', i === j));
+  // Tearing the old scene down must never stop the new one being built — the
+  // viewer would be left staring at the previous class's machine with the new
+  // class's name under it, which is worse than a missing scene because it
+  // looks like it worked.
+  if (live) {
+    try { live.dispose(); } catch (e) { console.warn('[champions] dispose failed:', e); }
+    live = null;
+  }
+  render(showcase.champions[i]);
+  window.__syncStore();
+}
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// Launched 2026-08-27: the store link is live and takes the primary slot.
+// (Pre-launch it was inert and deliberately demoted — see the stickycta
+// note; a repeated dead button was this page's worst bug.)
+const CTA = `<a class="btn store-btn" href="https://apps.apple.com/app/id6801680303" rel="noopener">Download on the App Store — Free</a>`
+          + ` <a class="btn ghost" href="#notify">Email me game news →</a>`;
+const CTASUB = `<p class="ctasub">iPhone &amp; iPad · Free · No ads</p>`;
+
+function render(c) {
+  if (!c.fight || !c.build) {
+    // The loudest block on the page, deliberately: an empty class is an
+    // invitation, and it is the only slot a reader can put themselves into.
+    const who = c.house
+      ? `<strong>${esc(c.robotName)}</strong>, a house machine the game ships with, is still
+         sitting on top of it at ${Math.round(c.rating)}.`
+      : `<strong>${esc(c.robotName)}</strong> leads it at ${Math.round(c.rating)} with no
+         ranked win on record yet.`;
+    panel.innerHTML = `<div class="unclaimed">
+      <p class="kicker">${esc(c.category)} · unclaimed</p>
+      <h2>NOBODY OWNS ${esc(c.category)}WEIGHT.</h2>
+      <p>No player-built robot has taken this class. ${who}
+      Build something out of beams, wheels and a blade, enlist it, and this slot — and this page — is yours.</p>
+      <div class="ctarow">${CTA}<a class="btn ghost" href="/robot-brawl/">How the ladder works →</a></div>
+      ${CTASUB}</div>`;
+    return;
+  }
+  const f = c.fight;
+  const hits = f.events.filter(e => e.e === 'hit' && e.a > 0);
+  const peak = hits.reduce((b, e) => (!b || e.a > b.a) ? e : b, null);
+  const foeName = String(f.opponent || 'the challenger');
+  panel.innerHTML = `
+    <div class="champ">
+      <div>
+        <div class="stage" id="stage">
+          <div class="stagenote" id="note">ONE OF THE HEAVIEST BLOWS</div>
+          <div class="replaychip" id="chip">REPLAY</div>
+          <div class="fadeover" id="fade"></div>
+          <div class="stagebar">
+            <button id="bFight" class="on">THE FIGHT</button>
+            <button id="bModel">THE BUILD</button>
+            <button id="bPlay">❚❚</button>
+            <button id="bReset" title="Restore the framing" style="display:none">RESET VIEW</button>
+            <input class="scrub" id="scrub" type="range" min="0" max="1000" value="0">
+          </div>
+        </div>
+        <p class="orbithint">
+          <span class="sidekey"><i style="background:${CHAMP_COL}"></i>${esc(c.robotName)}</span>
+          <span class="sidekey"><i style="background:${FOE_COL}"></i>${esc(foeName)}</span>
+          Drag to orbit · scroll to zoom
+        </p>
+      </div>
+      <div>
+        <p class="kicker">${esc(c.category)} champion</p>
+        <h2 style="margin:.1em 0 .2em">${esc(c.robotName)}</h2>
+        <p style="color:var(--ink-dim);margin:.2em 0">piloted by ${esc(c.owner)}</p>
+        <p class="statline">
+          <span><strong style="color:#e8ecf4">${Math.round(c.rating)}</strong> rating${c.provisional ? ' (provisional)' : ''}</span>
+          <span>${c.build.parts.length + c.build.extras.length} parts</span>
+        </p>
+        <div class="card" style="margin-top:14px">
+          <h3 style="margin-top:0">${f.opponentHouse ? 'First to beat the house machine' : 'The winning fight'}</h3>
+          <p style="color:var(--ink-dim);margin:.3em 0">
+            ${f.opponentHouse
+              ? `took down <strong style="color:#e8ecf4">${esc(foeName)}</strong>, the house robot guarding this class`
+              : `beat <strong style="color:#e8ecf4">${esc(foeName)}</strong>${f.opponentOwner ? ' (' + esc(f.opponentOwner) + ')' : ''}`}
+            ${f.completedAt ? ' · ' + esc(String(f.completedAt).slice(0, 10)) : ''}</p>
+          <p class="fightstats">${hits.length} hit${hits.length === 1 ? '' : 's'} ·
+            this one ${Math.round((peak || {}).a || 0)} damage ·
+            ${(f.duration || 0).toFixed(1)} seconds of the match record</p>
+          <div class="ctarow" style="margin-top:14px">${CTA}</div>
+          ${CTASUB}
+        </div>
+        <p class="partshead">What ${esc(c.robotName)} is made of</p>
+        <div class="partlist">${
+          [...new Set(c.build.parts.concat(c.build.extras).map(p => p.id))]
+            .map(id => `<span class="chip">${esc((partTable.parts[id] || {}).label || id)}</span>`).join('')
+        }</div>
+      </div>
+    </div>`;
+  // ⚠ A FAILED BOOT USED TO LOOK EXACTLY LIKE A BLACK STAGE, AND ON A PHONE
+  // THAT IS ALL ANYONE CAN SEE. There was no try/catch anywhere around the 3D
+  // setup, so one exception on a device we cannot open a console on left the
+  // static placeholder shell — note text, THE FIGHT pre-highlighted, the pause
+  // glyph — sitting over an empty box, which reads as "the 3D is broken" and
+  // says nothing about why. It cost a round trip to owen's iPhone to even
+  // establish that the script had died rather than rendered black.
+  // Now: say so on screen, in text a phone can screenshot.
+  const stageEl = document.getElementById('stage');
+  const SAFE = /(\?|&)safe=1/.test(location.search);
+  try {
+    live = mount(stageEl, c, SAFE);
+  } catch (err) {
+    // ⚠ RETRY WITHOUT THE EXPENSIVE OPTIONAL PARTS BEFORE GIVING UP. The two
+    // things most likely to be refused by a phone are the ones that allocate
+    // float render targets: the PMREM environment map and the bloom composer.
+    // Neither is load-bearing — without the environment metal renders dull
+    // rather than not at all — so a device that cannot afford them should get
+    // the machines, not an apology.
+    console.warn('[champions] full boot failed, retrying in safe mode:', err);
+    stageEl.querySelectorAll('canvas').forEach(n => n.remove());
+    try {
+      live = mount(stageEl, c, true);
+      const n = document.createElement('div');
+      n.className = 'stagefail soft';
+      n.innerHTML = '<span>reduced graphics on this device</span>';
+      stageEl.appendChild(n);
+    } catch (err2) {
+      live = null;
+      stageEl.querySelectorAll('canvas').forEach(n => n.remove());
+      showStageError(stageEl, err2);
+    }
+  }
+}
+
+// The whole point is to be readable on a phone with no console attached, so
+// this reports the CAPABILITIES too — most ways this can fail are the device
+// refusing something (no WebGL context, no float textures, an out-of-memory
+// render target) rather than a logic bug, and the capability line is what
+// separates those without another round trip.
+function showStageError(host, err) {
+  if (!host) return;
+  let caps = 'unavailable';
+  try {
+    const cv = document.createElement('canvas');
+    const gl = cv.getContext('webgl2') || cv.getContext('webgl');
+    caps = gl
+      ? `${gl.getParameter(gl.VERSION)} · maxTex ${gl.getParameter(gl.MAX_TEXTURE_SIZE)}`
+        + ` · float ${!!(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'))}`
+      : 'no WebGL context';
+  } catch (e) { caps = 'probe failed: ' + e.message; }
+  const box = document.createElement('div');
+  box.className = 'stagefail';
+  box.innerHTML =
+    `<b>The 3D viewer could not start on this device.</b>`
+    + `<span>${esc(String((err && (err.message || err)) || 'unknown error'))}</span>`
+    + `<span>${esc(caps)}</span>`
+    + `<span>${esc(navigator.userAgent)}</span>`;
+  host.appendChild(box);
+}
+
+// ------------------------------------------------------------ 3D rendering
+// ⚠ UNITY IS LEFT-HANDED, THREE.JS IS RIGHT-HANDED. Copying the recorded
+// transforms straight across renders a MIRRORED robot — which looks almost
+// right, and is wrong in exactly the way nobody notices until a spinner turns
+// the wrong way. Mirror Z on positions and negate x,y on the quaternion.
+const P = (x, y, z) => new THREE.Vector3(x, y, -z);
+const Q = (x, y, z, w) => new THREE.Quaternion(-x, -y, z, w);
+
+// One shared uniform object across every part material, so MODEL mode can turn
+// the team rim down in a single assignment. In THE BUILD there is no opponent
+// to tell the machine apart FROM, so the tint is only costing honesty there.
+const RIM = { value: 1 };
+
+const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
+const smooth = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+
+function geoFor(id) {
+  const d = partTable.parts[id];
+  if (!d) return new THREE.BoxGeometry(0.2, 0.2, 0.2);          // unknown part: a modest cube
+  return d.disc
+    ? new THREE.CylinderGeometry(d.sx / 2, d.sx / 2, d.sy, 20)  // x/z = diameter, y = width
+    : new THREE.BoxGeometry(d.sx, d.sy, d.sz);
+}
+
+// ---- the game's own part visuals -----------------------------------------
+// ⚠ A PART IN THIS GAME IS NOT A BOX. PartVisualFactory.BuildPart assembles
+// each one from a body, end caps, rows of bolt cylinders, hazard ribs, socket
+// dots and glowing accents across a dozen fixed materials — 398 primitives
+// across the catalogue, 33 for a single beam. Drawing one flat box per part
+// threw all of that away, which is exactly why the machines read as blocks
+// here and as machinery in the game. parts.json now carries the recipe,
+// captured by RUNNING BuildPart rather than reimplementing it, so a part
+// restyled in the game restyles here at the next export.
+// Unity primitive conventions, which the scales in the recipe assume:
+// Cube is 1x1x1, Sphere is diameter 1, Cylinder is diameter 1 and HEIGHT 2.
+const UNIT_CUBE = new THREE.BoxGeometry(1, 1, 1);
+const UNIT_CYL  = new THREE.CylinderGeometry(0.5, 0.5, 2, 14);
+const UNIT_SPH  = new THREE.SphereGeometry(0.5, 14, 10);
+const UNIT_CAP  = new THREE.CapsuleGeometry(0.5, 1, 4, 10);
+const unitGeo = t => t === 'cyl' ? UNIT_CYL
+                   : t === 'sph' ? UNIT_SPH
+                   : t === 'cap' ? UNIT_CAP
+                   : UNIT_CUBE;
+
+/// Build one part as the game builds it. Returns an Object3D whose own
+/// transform is the part's world transform (set by the caller from the
+/// replay), with the recipe pieces beneath it in part-local space.
+function partObject(id, matName, isChamp, weapon, ax, yaw) {
+  const d = partTable.parts[id];
+  // ⚠ HOW A PART IS DRAWN DEPENDS ON TWO THINGS THE TRANSFORM DOES NOT CARRY.
+  //
+  // AXIS: the builder draws a pivot/spindle/ram/blade/wedge/hook through an
+  // axis-coded id ("bladeZN") rather than rotating it, so which way it points
+  // is a property of the DRAWING.
+  //
+  // YAW: the builder passes `part.Half() * 2` as the size, and Half() SWAPS
+  // the size components for a yawed part — so the visual is regenerated around
+  // a new long axis. Nothing rotates, and each yaw swaps a different pair
+  // (90: x/z, 180: y/z, 270: x/y), so it is not one turn about Y either.
+  //
+  // Neither is recoverable from the recorded transform, so parts.json carries
+  // a recipe per combination and this picks it. Getting it wrong lays every
+  // turned beam the wrong way across the chassis — which is what owen saw on
+  // LIGHT, whose spine is two beamlongs at 90 and 180.
+  const key = (ax || '') + (yaw ? 'y' + yaw : '');
+  const vis = (key && d && d.visVar && d.visVar[key]) || (d && d.vis);
+  const holder = new THREE.Object3D();
+  if (!vis || !vis.length) {                    // no recipe: the old single box
+    const geo = geoFor(id);
+    const mesh = new THREE.Mesh(geo, matFor(matName, weapon, isChamp));
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    outline(mesh, geo);
+    holder.add(mesh);
+    return holder;
+  }
+  // ⚠ ONE MESH PER PIECE WOULD BE 1529 DRAW CALLS FOR THE FEATHER FIGHT
+  // (45 + 29 parts, counted from parts.json), against 74 when a part was a
+  // single box. That is fine on a desktop — measured 1.35 ms/frame — and it is
+  // exactly the kind of 20x that stutters on a phone, which nothing in this
+  // harness can measure. So the pieces of one part are BAKED INTO ONE GEOMETRY
+  // PER MATERIAL: the pieces never move relative to each other (only the part
+  // moves, and that is the holder's transform), so there is nothing to lose.
+  const byMat = new Map();
+  const bodyMat = matFor(matName, weapon, isChamp);
+  const m4 = new THREE.Matrix4(), pos = new THREE.Vector3(),
+        quat = new THREE.Quaternion(), scl = new THREE.Vector3();
+  for (const piece of vis) {
+    // "body" pieces wear the player's chosen alloy; the functional accents
+    // keep the colour the game gave them, because those are what say "this is
+    // the sharp end" (BuildPart's own reasoning).
+    const mat = piece.c === 'body' ? bodyMat : fixedMat(piece, isChamp);
+    pos.copy(P(piece.p[0], piece.p[1], piece.p[2]));
+    // Unity euler order is ZXY, and mirroring Z flips the quaternion's x,y.
+    const uq = new THREE.Quaternion().setFromEuler(new THREE.Euler(
+      THREE.MathUtils.degToRad(piece.r[0]),
+      THREE.MathUtils.degToRad(piece.r[1]),
+      THREE.MathUtils.degToRad(piece.r[2]), 'ZXY'));
+    quat.set(-uq.x, -uq.y, uq.z, uq.w);
+    scl.set(piece.s[0], piece.s[1], piece.s[2]);
+    // A mirrored QUATERNION rather than a negative scale, so the winding order
+    // survives the bake and the faces do not turn inside out.
+    const g = unitGeo(piece.t).clone().applyMatrix4(m4.compose(pos, quat, scl));
+    const bucket = byMat.get(mat);
+    if (bucket) bucket.push(g); else byMat.set(mat, [g]);
+  }
+  for (const [mat, geos] of byMat) {
+    let geo = geos[0];
+    if (geos.length > 1) {
+      const merged = mergeGeometries(geos, false);
+      if (merged) { geos.forEach(g => g.dispose()); geo = merged; }
+    }
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    holder.add(mesh);
+  }
+  return holder;
+}
+
+const fixedMatCache = new Map();
+function fixedMat(piece, isChamp) {
+  const key = piece.c + '|' + piece.me + '|' + piece.sm + '|' + (piece.glow ? 1 : 0) + '|' + (isChamp ? 1 : 0);
+  let m = fixedMatCache.get(key);
+  if (m) return m;
+  const col = new THREE.Color(piece.c);
+  const luma = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b;
+  const emissive = col.clone().multiplyScalar(piece.glow ? 0.9 : 0.14 * clamp(1 - luma, 0, 1));
+  m = new THREE.MeshStandardMaterial({
+    color: col,
+    metalness: Math.min(0.75, piece.me ?? 0.5),
+    roughness: Math.max(0.22, 1 - Math.min(0.85, piece.sm ?? 0.5)),
+    emissive, emissiveIntensity: 1,
+  });
+  // Same Fresnel rim as matFor, same arithmetic — an accent that skipped the
+  // tint would break the side read exactly where the eye lands, on the bolts
+  // and caps that catch the light.
+  const dark = clamp(1 - luma, 0, 1);
+  const team = new THREE.Color(isChamp ? CHAMP_COL : FOE_COL);
+  const addK = 0.30 * dark, mulK = 0.85 * (1 - dark);
+  m.onBeforeCompile = shader => {
+    shader.uniforms.uTeam = { value: team };
+    shader.uniforms.uRimK = { value: new THREE.Vector2(addK, mulK) };
+    shader.uniforms.uRimScale = RIM;
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uTeam;\nuniform vec2 uRimK;\nuniform float uRimScale;')
+      .replace('#include <tonemapping_fragment>',
+        'float rimF = pow( 1.0 - clamp( dot( normalize( normal ), normalize( vViewPosition ) ), 0.0, 1.0 ), 5.0 ) * uRimScale;\n' +
+        'gl_FragColor.rgb += uTeam * rimF * uRimK.x;\n' +
+        'gl_FragColor.rgb = mix( gl_FragColor.rgb, gl_FragColor.rgb * uTeam, rimF * uRimK.y );\n' +
+        '#include <tonemapping_fragment>');
+  };
+  m.customProgramCacheKey = () => 'fix' + (isChamp ? 1 : 0) + '_' + addK.toFixed(3) + '_' + mulK.toFixed(3);
+  fixedMatCache.set(key, m);
+  return m;
+}
+
+function matFor(name, weapon, isChamp) {
+  const m = (partTable.materials || {})[name] || { color: '#9aa3b2', metallic: .4, smoothness: .4 };
+  const col = new THREE.Color(m.color);
+  // Carbon fibre is #1A1A1F — honest, and on a dark page it renders as a
+  // silhouette with no readable form. A LITTLE self-emission of the part's own
+  // colour lifts blacks without repainting the robot a colour it isn't.
+  // ⚠ This used to be x0.45, which was doing the job of the missing
+  // environment map: with `scene.environment` set, x0.45 is a flat wash that
+  // erases the very specular gradient the envmap provides. It is x0.10 now
+  // because the lighting is real; do not raise it to fix a dark render.
+  // ⚠ AND IT IS PROPORTIONAL TO HOW DARK THE MATERIAL IS. A flat ×0.10 helps
+  // carbon fibre and does nothing for aluminium except push it past white:
+  // measured on the FEATHER opponent, whose 13 aluminium parts came back 2.9%
+  // CLIPPED TO PURE WHITE and 27% above 0.90 luma while the mostly-carbon
+  // champion beside it measured 0.0% and 0%. The lift exists to rescue blacks,
+  // so it is scaled by how black the material actually is.
+  const luma = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b;   // linear-space
+  const dark = clamp(1 - luma, 0, 1);
+  const lift = col.clone().multiplyScalar(0.14 * dark);
+  const emissive = lift.clone();
+  if (weapon) emissive.add(new THREE.Color('#2a0c08'));   // a weapon carries a faint heat
+  const mat = new THREE.MeshStandardMaterial({
+    color: col,
+    metalness: Math.min(0.75, m.metallic ?? .4),
+    roughness: Math.max(0.25, 1 - Math.min(0.85, m.smoothness ?? .4)),
+    emissive,
+    emissiveIntensity: 1,
+  });
+  // TEAM RIM TINT — champion amber, opponent cyan, matching the sides' colours
+  // in the game. ⚠ IT IS A FRESNEL RIM, NOT A FLAT ADD TO `emissive`. Measured:
+  // the FEATHER champion is 29 parts of CarbonFiber, whose base colour is
+  // #1A1A1F — about 0.01 in linear light. A constant emissive of 0.09 is NINE
+  // TIMES the material's own response, so the whole machine rendered as one
+  // flat brick-red fill with no specular gradient left in it, which is the
+  // exact defect the "no flat single-value fills" rule is about. A rim rides
+  // the grazing angles instead: it separates the two machines from any camera
+  // position AND leaves the lit faces showing the material they are made of.
+  // ⚠ AND THE RIM ADDS LIGHT TO DARK BODIES, BUT TINTS BRIGHT ONES. Adding
+  // cyan to a white aluminium edge does not make it read cyan — it makes it
+  // read WHITER, and takes the last of the material's gradient with it. So the
+  // add is scaled by darkness, and a multiply takes over as the material gets
+  // brighter: on a pale body the grazing angles are pulled TOWARD the team
+  // hue by darkening the other channels, which is a rim you can see and cannot
+  // clip. Same colour, same silhouette, opposite arithmetic.
+  const team = new THREE.Color(isChamp ? CHAMP_COL : FOE_COL);
+  // ⚠ EXPONENT 5, NOT 3 — AT 3 THIS MACHINE IS NOT RIMMED, IT IS PAINTED.
+  // A robot built from long flat slabs seen from ~33° presents most of its area
+  // at a shallow angle, so pow(1-N·V, 3) is still worth a big fraction of the
+  // tint across a WHOLE FACE rather than a line at its edge. The FEATHER
+  // champion is 29 parts of CarbonFiber #1A1A1F and THE BUILD was rendering it
+  // copper. The controlled check settles that it is the tint and not the data:
+  // same scene, same lights, the cyan-rimmed opponent renders true grey while
+  // the amber-rimmed champion goes brown. 5 keeps the tint on the silhouette.
+  //
+  // ⚠ AND THE MULTIPLY BRANCH CARRIES PALE MACHINES. `dark` is near 1 for
+  // carbon, so the ADD does the work there; it is near 0 for aluminium and ABS,
+  // where adding light only washes them out and the tint has to come from
+  // pulling the other channels DOWN instead.
+  const addK = 0.30 * dark, mulK = 0.85 * (1 - dark);
+  mat.onBeforeCompile = shader => {
+    shader.uniforms.uTeam = { value: team };
+    shader.uniforms.uRimK = { value: new THREE.Vector2(addK, mulK) };
+    shader.uniforms.uRimScale = RIM;          // shared: MODEL mode turns it down
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uTeam;\nuniform vec2 uRimK;\nuniform float uRimScale;')
+      .replace('#include <tonemapping_fragment>',
+        'float rimF = pow( 1.0 - clamp( dot( normalize( normal ), normalize( vViewPosition ) ), 0.0, 1.0 ), 5.0 ) * uRimScale;\n' +
+        'gl_FragColor.rgb += uTeam * rimF * uRimK.x;\n' +
+        'gl_FragColor.rgb = mix( gl_FragColor.rgb, gl_FragColor.rgb * uTeam, rimF * uRimK.y );\n' +
+        '#include <tonemapping_fragment>');
+  };
+  // ⚠ THE CACHE KEY MUST CARRY EVERY UNIFORM THE SHADER BAKES IN. Keying only
+  // on the side would let two materials with different rim constants share one
+  // compiled program, and whichever compiled first would silently colour both.
+  mat.customProgramCacheKey = () => 'team' + (isChamp ? 1 : 0) + '_' + addK.toFixed(3) + '_' + mulK.toFixed(3);
+  return mat;
+}
+
+// A soft round blob, used for hit sparks and for the studio pad's alpha.
+function radialTexture(stops) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  const g = cv.getContext('2d');
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  stops.forEach(s => grd.addColorStop(s[0], s[1]));
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+// The game's arena wall: yellow/near-black hazard stripes. Drawn here rather
+// than shipped as an image — it is a 45° repeat, so a canvas costs 0 KB of
+// payload and never 404s. Reference: the ARENA screenshot on /robot-brawl/.
+function hazardTexture() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#141414'; g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = '#E0B015'; g.lineWidth = 30;
+  // 45° lines on a 128 tile at a 64 pitch: the diagonal shift over one tile is
+  // exactly two pitches, so the pattern is seamless in both directions.
+  for (let i = -128; i <= 256; i += 64) {
+    g.beginPath(); g.moveTo(i, 0); g.lineTo(i + 128, 128); g.stroke();
+  }
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(12, 1);      // per wall face — the box maps 0..1 across each
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+// ⚠ THE CANVAS IS FITTED TO THE TEXT, and that is what makes the label
+// clampable. A fixed 512-wide canvas holding a short name is mostly empty
+// pixels, so the sprite's bounds say nothing about where the WORD ends — and a
+// clamp against the sprite either overhangs a long name ("HOUSE CROWBAR" lost
+// its R) or wastes half the stage on a short one. Sized to the glyphs, the
+// sprite's own width IS the text width, and the caller can keep it on screen.
+const TAG_FONT = 'bold 62px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif';
+const TAG_H = 0.30;                       // world height of the label
+function nameTag(text, colour) {
+  const label = String(text).toUpperCase().slice(0, 18);
+  const probe = document.createElement('canvas').getContext('2d');
+  probe.font = TAG_FONT;
+  const cv = document.createElement('canvas');
+  cv.width = Math.max(64, Math.ceil(probe.measureText(label).width) + 30);
+  cv.height = 96;
+  const g = cv.getContext('2d');            // state resets when width is set
+  // ⚠ A DROP SHADOW IS NOT CONTRAST — IT ONLY WORKS OVER A DARK BACKDROP. These
+  // labels cross a bright yellow hazard wall, where amber text on yellow stripes
+  // is close to invisible and grey text is worse. On LIGHT they are the only
+  // thing separating two pale machines, so they cannot be allowed to lose to
+  // whatever happens to be behind them. Give every label its own dark ground.
+  const r = cv.height * 0.30;
+  g.beginPath();
+  g.moveTo(r + 2, 6);
+  g.arcTo(cv.width - 2, 6, cv.width - 2, cv.height - 6, r);
+  g.arcTo(cv.width - 2, cv.height - 6, 2, cv.height - 6, r);
+  g.arcTo(2, cv.height - 6, 2, 6, r);
+  g.arcTo(2, 6, cv.width - 2, 6, r);
+  g.closePath();
+  g.fillStyle = 'rgba(7,9,14,0.78)';
+  g.fill();
+  g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,0.55)'; g.stroke();
+  g.font = TAG_FONT;
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.shadowColor = 'rgba(0,0,0,.95)'; g.shadowBlur = 10;
+  g.fillStyle = colour;
+  g.fillText(label, cv.width / 2, cv.height / 2 + 2);
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: t, transparent: true, depthTest: false, depthWrite: false, opacity: 0,
+  }));
+  sp.scale.set(TAG_H * cv.width / cv.height, TAG_H, 1);
+  sp.userData.aspect = cv.width / cv.height;   // for constant-screen-size sizing
+  sp.renderOrder = 20;
+  return sp;
+}
+
+function mount(host, c, safe) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#0c0f15');
+  scene.fog = new THREE.Fog('#0c0f15', 16, 40);
+
+  // ⚠ THE LENS IS PART OF THE SHOT. Some fights happen close enough to the wall
+  // that no camera position inside the ring can fill the frame — and the ring
+  // is not negotiable, because the wall is BackSide and from outside it the
+  // black void comes straight back. When the distance solver pins against that,
+  // the answer is the one an operator reaches for when they cannot step closer:
+  // a longer lens. 42° establishes, down to 27° at the punch-in when needed.
+  const FOV_BASE = 42, FOV_MIN = 27;
+  // How close to the ring counts as "at the wall", and how much of the normal
+  // fill target such a shot settles for. Both measured against wall coverage.
+  const RIM_NEAR = 1.5, RIM_FILL = 1.0;
+  let nearRim = false;
+  const cam = new THREE.PerspectiveCamera(FOV_BASE, 16 / 10, 0.1, 200);
+  let camFov = FOV_BASE, shotFov = FOV_BASE;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  // ⚠ WITHOUT AN ENVIRONMENT MAP, METALNESS 0.75 RENDERS BLACK. A metal has
+  // almost no diffuse response — it is entirely reflections — so every
+  // aluminium and steel part on this page was a flat dark shape lit only by
+  // the specular highlight of three directional lights. RoomEnvironment gives
+  // them something to reflect; that, not the lights, is what makes metal look
+  // like metal.
+  // Skipped in safe mode: this is a float render target, one of the two things
+  // a memory-constrained phone is most likely to refuse.
+  // ⚠ DECLARED OUT HERE ON PURPOSE. These two are torn down in dispose(), so
+  // scoping them inside the `if` puts them in dispose()'s dead zone — which is
+  // not a quiet leak but a THROW, and dispose() runs from select() BEFORE the
+  // next mount, so a single class switch died half-torn-down and the page
+  // froze with the old scene still on screen. Shipped exactly that way for one
+  // deploy. Anything dispose() touches must be declared at mount scope.
+  let pmrem = null, envRT = null;
+  if (!safe) {
+    pmrem = new THREE.PMREMGenerator(renderer);
+    envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envRT.texture;
+  }
+  // ⚠ AT 0.6, NOT 1.0 — THE RIG WAS ALREADY FULLY EXPOSED BEFORE THE ENVIRONMENT
+  // ARRIVED. RoomEnvironment is a bright white studio box, so at full strength
+  // it becomes the KEY light rather than the fill, and it lands on top of four
+  // lights that were set when there was no environment at all. Measured on the
+  // LIGHT opponent, a house machine with five ABS parts (#EBE6D9, the brightest
+  // material in the game): 12.6% of its pixels CLIPPED TO PURE WHITE and 62%
+  // sat above 0.90 luma, with no seam readable anywhere on it. The isolation
+  // run is unambiguous — dropping environmentIntensity alone took the clipping
+  // to zero, while dimming the KEY light barely moved it (13.1% → 11.9%).
+  scene.environmentIntensity = 0.6;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  host.insertBefore(renderer.domElement, host.firstChild);
+
+  // Bloom is what makes a 167-damage hit read as a blast rather than a decal.
+  // It is also the most expensive thing here, so it is gated off on very large
+  // high-DPI canvases and whenever the viewer has asked for less motion.
+  const bloomOK = !safe && !REDUCED && (devicePixelRatio * host.clientWidth) <= 2200;
+  let composer = null, bloom = null;
+  if (bloomOK) {
+    composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    composer.addPass(new RenderPass(scene, cam));
+    // ⚠ THRESHOLD 1.6, NOT 0.82 — AND THE UNIT IS THE REASON. The threshold is
+    // applied to the LINEAR HDR buffer, before tone mapping, where a lit white
+    // surface is not 0.9 but somewhere past 1.5. At 0.82 an entire white ABS
+    // robot sat above the line, so bloom treated the whole machine as an
+    // emitter and glued it into one white shape with no seams left in it.
+    // Measured on the LIGHT opponent: threshold alone, 0.88 → 2.4, took its
+    // clipping from 13.1% to 0%. 1.6 is where clipping stops with the
+    // environment at 0.6, and the burst is unaffected — the sparks are additive
+    // sprites stacked several deep, an order of magnitude above any of this.
+    bloom = new UnrealBloomPass(new THREE.Vector2(host.clientWidth || 640, host.clientHeight || 400), .55, .35, 1.6);
+    composer.addPass(bloom);
+    // ⚠ The renderer skips tone mapping when it draws into a render target, so
+    // the composer path needs OutputPass to apply it. Without this the two
+    // paths (bloom on / bloom off) are graded differently.
+    composer.addPass(new OutputPass());
+  }
+
+  scene.add(new THREE.HemisphereLight('#a8bcdd', '#2b3038', 0.75));
+  const key = new THREE.DirectionalLight('#fff4e2', 2.0);
+  key.position.set(5, 9, 4);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.left = -8; key.shadow.camera.right = 8;
+  key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
+  key.shadow.bias = -0.0008;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight('#6f9bff', 1.15);       // separates dark bodies from a dark page
+  rim.position.set(-6, 4, -5); scene.add(rim);
+  const fill = new THREE.DirectionalLight('#ffffff', .55);
+  fill.position.set(-3, 2, 7); scene.add(fill);
+
+  // The arena belongs to the FIGHT. In MODEL mode it is hidden: a 3.7 m robot
+  // inside a 14 m ring renders as a speck, and the point of that view is the
+  // machine, not the venue.
+  // ⚠ THE ARENA IS A SQUARE, AND BUILDING IT ROUND WAS THE ROOT OF THE WHOLE
+  // WALL-ADJACENT CAMERA PROBLEM. `arenaHalf` is a half-EXTENT, not a radius:
+  // the game's own arena (see assets/img/replay.jpg) is a rectangular pit with
+  // straight walls, corners, and a gold-and-black striped top rail. Measured
+  // against the replays, every one of the four peak hits lands at radius
+  // 6.35–8.56 m with arenaHalf = 7 — so three of the four fights climaxed
+  // OUTSIDE the cylinder I had built, which a 7 m square contains easily (its
+  // corner reaches 9.9 m). That is why those shots were full of wall: the
+  // camera was clamped inside a ring the machines had already left, forced to
+  // look outward past it. A square puts every fight back inside its venue.
+  const half = c.fight.arenaHalf || 7;
+  const WALL_H = 1.1;
+  const arena = new THREE.Group(); scene.add(arena);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(half * 2, half * 2),
+    new THREE.MeshStandardMaterial({ color: '#161b24', roughness: .95, metalness: 0 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; arena.add(floor);
+
+  // ⚠ FOUR INWARD PLANES, NOT A BOX. A BackSide BoxGeometry renders the inside
+  // of ALL SIX faces, and its BOTTOM one sits exactly on the arena floor — so
+  // the hazard stripes were painted across the whole playing surface. Measured
+  // before this was spotted: the "wall" covered 69% of the frame, most of it
+  // underfoot. Four planes have no lid and no base to leak.
+  const wallTex = hazardTexture();
+  const wallMat = new THREE.MeshStandardMaterial({ map: wallTex, roughness: .8, metalness: .1 });
+  const wall = new THREE.Group();
+  [[0, -half, 0], [0, half, Math.PI], [-half, 0, Math.PI / 2], [half, 0, -Math.PI / 2]]
+    .forEach(([x, z, ry]) => {
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(half * 2, WALL_H), wallMat);
+      p.position.set(x, WALL_H / 2, z); p.rotation.y = ry; p.receiveShadow = true;
+      wall.add(p);
+    });
+  arena.add(wall);
+  // The gold cap along the top of all four walls, as in the game.
+  const rail = new THREE.Group();
+  const railMat = new THREE.MeshStandardMaterial({ color: '#c9a227', metalness: .6, roughness: .4 });
+  [[0, half], [0, -half], [half, 0], [-half, 0]].forEach(([x, z]) => {
+    const along = x === 0 ? half * 2 + 0.24 : 0.24;
+    const across = x === 0 ? 0.24 : half * 2 + 0.24;
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(along, 0.12, across), railMat);
+    bar.position.set(x, WALL_H, z); rail.add(bar);
+  });
+  arena.add(rail);
+  const grid = new THREE.GridHelper(half * 2, 14, '#2b3a4c', '#19202a');
+  grid.position.y = 0.005; arena.add(grid);
+
+  // A small studio pad for MODEL mode. It fades to nothing at the rim and is
+  // sized to the machine — it used to be a hard-edged 3.2 m disc, i.e. the
+  // biggest and brightest object in a view that is supposed to be about a
+  // robot.
+  // ⚠ IT HAS TO BE BRIGHT ENOUGH TO CATCH A SHADOW. A black pad on a black
+  // background is not a subtle pad, it is no pad — and a ShadowMaterial
+  // painting black onto nothing renders exactly nothing, which is how MODEL
+  // mode ended up with the machine floating in a void and no cast shadow.
+  const padTex = radialTexture([[0, 'rgba(150,168,205,1)'], [.35, 'rgba(112,128,164,.72)'],
+                                [.7, 'rgba(64,74,98,.28)'], [1, 'rgba(0,0,0,0)']]);
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(1, 64),
+    new THREE.MeshBasicMaterial({ map: padTex, transparent: true, depthWrite: false }));
+  pad.rotation.x = -Math.PI / 2; pad.position.y = 0.001; pad.visible = false; scene.add(pad);
+  const padShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 64),
+    new THREE.ShadowMaterial({ opacity: .5 }));
+  padShadow.rotation.x = -Math.PI / 2; padShadow.position.y = 0.004;
+  padShadow.receiveShadow = true;
+  padShadow.visible = false; scene.add(padShadow);
+
+  const controls = new OrbitControls(cam, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = .08;
+  controls.minDistance = 1.2; controls.maxDistance = 30;
+  controls.maxPolarAngle = Math.PI * 0.49;
+
+  // --- meshes -------------------------------------------------------------
+  // A soft white blob, tinted per side, for the team underglow on the floor.
+  const glowTex = radialTexture([[0, 'rgba(255,255,255,.95)'], [.45, 'rgba(255,255,255,.34)'],
+                                 [1, 'rgba(255,255,255,0)']]);
+  const disposables = [padTex, wallTex, glowTex];
+  function outline(mesh, geo) {
+    // One silhouette is one part as far as the eye is concerned. A crease line
+    // at 25° gives every box and disc its own edges back without lighting them.
+    const eg = new THREE.EdgesGeometry(geo, 25);
+    const lm = new THREE.LineBasicMaterial({ color: '#9FB3D9', transparent: true, opacity: .22, depthWrite: false });
+    mesh.add(new THREE.LineSegments(eg, lm));
+    disposables.push(eg, lm);
+  }
+  function makeSide(parts, extras, isChamp) {
+    const g = new THREE.Group();
+    const animated = parts.map(p => {
+      const d = partTable.parts[p.id];
+      const obj = partObject(p.id, p.mat, isChamp, d && d.edge > 1.15, p.ax, p.yaw);
+      g.add(obj); return obj;
+    });
+    // Wheels and anything else the replay does not record: pinned to the
+    // chassis root at their BUILD offset. See align() in bake_showcase.py.
+    const root = new THREE.Group(); g.add(root);
+    (extras || []).forEach(e => {
+      const d = partTable.parts[e.id];
+      const mesh = partObject(e.id, e.mat, isChamp, d && d.edge > 1.15, e.ax, e.yaw);
+      const lp = e.local || e.pos;   // root-local, resolved by the baker
+      mesh.position.copy(P(lp[0], lp[1], lp[2]));
+      // A disc's own axis is Y; the build's axis field says which way it faces.
+      if (d && d.disc) {
+        const ax = new THREE.Vector3(e.axis[0], e.axis[1], -e.axis[2]);
+        if (ax.lengthSq() > 1e-4)
+          mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), ax.normalize());
+      }
+      root.add(mesh);
+    });
+    // ⚠ EVERY TRANSFORM IN A REPLAY IS WORLD-SPACE, so a side's meshes sit
+    // wherever the fight put them — metres from the origin. Rotating the
+    // group directly (the turntable) would swing the robot around the arena
+    // in a wide circle instead of spinning it in place, so MODEL mode parents
+    // it to a pivot and slides the group back by its own centre.
+    const pivot = new THREE.Group(); pivot.add(g); scene.add(pivot);
+
+    // ⚠ THE GROUND MARK IS THE CUE THAT WORKS ON ANY MATERIAL, so it carries
+    // more weight the LESS the rim can. A rim tint needs a dark body to read
+    // against; on a machine of aluminium and white ABS there is nothing for it
+    // to darken, which is why the carbon-bodied FEATHER champion is obvious and
+    // the two pale LIGHT machines were not. Measure the side's own paleness and
+    // spend it here: a wider, brighter ring plus a soft underglow beneath.
+    const teamCol = isChamp ? CHAMP_COL : FOE_COL;
+    const mats = parts.concat(extras || []).map(p => p.mat);
+    const pale = mats.length
+      ? mats.reduce((s, n) => {
+          const m = (partTable.materials || {})[n];
+          const col = new THREE.Color(m ? m.color : '#9aa3b2');
+          return s + clamp(0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b, 0, 1);
+        }, 0) / mats.length
+      : 0.5;
+    const ringOuter = 0.62 + 0.26 * pale;
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: teamCol, transparent: true, opacity: 0.55 + 0.35 * pale,
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+    });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(ringOuter - 0.20, ringOuter, 48), ringMat);
+    ring.rotation.x = -Math.PI / 2; ring.position.y = .02; ring.visible = false;
+    scene.add(ring);
+    const glowMat = new THREE.MeshBasicMaterial({
+      map: glowTex, color: teamCol, transparent: true, opacity: 0.22 + 0.26 * pale,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    });
+    const glow = new THREE.Mesh(new THREE.CircleGeometry(1, 40), glowMat);
+    glow.rotation.x = -Math.PI / 2; glow.position.y = .012;
+    glow.scale.setScalar(ringOuter * 1.7); glow.visible = false;
+    scene.add(glow);
+    return { group: g, pivot, animated, root, ring, glow, pale: +pale.toFixed(3) };
+  }
+
+  const champ = makeSide(c.build.parts, c.build.extras, true);
+  const foe = makeSide(c.build.opponentParts || [], c.build.opponentExtras || [], false);
+  foe.group.visible = false;
+
+  const champTag = nameTag(c.robotName, '#FFB648');
+  const foeTag = nameTag(c.fight.opponent || 'challenger', FOE_COL);
+  scene.add(champTag, foeTag);
+
+  // Root offset bookkeeping: extras hang off the recorded ROOT transform.
+  function applyPose(side, flat) {
+    const n = side.animated.length;
+    // flat = [root(7), part0(7), part1(7) ...]
+    const rp = P(flat[0], flat[1], flat[2]);
+    const rq = Q(flat[3], flat[4], flat[5], flat[6]);
+    side.root.position.copy(rp); side.root.quaternion.copy(rq);
+    for (let i = 0; i < n; i++) {
+      const o = 7 + i * 7;
+      if (o + 6 >= flat.length) break;
+      side.animated[i].position.copy(P(flat[o], flat[o + 1], flat[o + 2]));
+      side.animated[i].quaternion.copy(Q(flat[o + 3], flat[o + 4], flat[o + 5], flat[o + 6]));
+    }
+  }
+
+  // --- MODEL mode ---------------------------------------------------------
+  // Pose the machine as built, then re-centre it over the origin so the
+  // turntable spins it on the spot and the camera can sit close.
+  applyPose(champ, c.build.pose);
+  const poseBox = new THREE.Box3().setFromObject(champ.group);
+  const poseCentre = poseBox.getCenter(new THREE.Vector3());
+  const poseSize = poseBox.getSize(new THREE.Vector3());
+  const modelShift = new THREE.Vector3(-poseCentre.x, -poseBox.min.y, -poseCentre.z);
+  const modelW = Math.hypot(poseSize.x, poseSize.z);
+  const modelH = Math.max(0.2, poseSize.y);
+  const modelR = Math.max(0.4, modelW / 2);
+  pad.scale.setScalar(modelR * 0.95);
+  padShadow.scale.setScalar(modelR * 1.15);
+
+  // --- FIGHT mode ---------------------------------------------------------
+  const bySide = { 0: [], 1: [] };
+  c.fight.frames.forEach(fr => (bySide[fr.s] || (bySide[fr.s] = [])).push(fr));
+  Object.values(bySide).forEach(a => a.sort((x, y) => x.t - y.t));
+  const champSide = c.build.side, foeSide = champSide === 0 ? 1 : 0;
+  const duration = c.fight.duration || 12;
+
+  function sample(list, t) {
+    if (!list || !list.length) return null;
+    let i = 0; while (i < list.length - 1 && list[i + 1].t <= t) i++;
+    const a = list[i], b = list[Math.min(i + 1, list.length - 1)];
+    const span = Math.max(1e-4, b.t - a.t);
+    return { a, b, k: Math.max(0, Math.min(1, (t - a.t) / span)) };
+  }
+  const tmpP = new THREE.Vector3(), tmpQ = new THREE.Quaternion();
+  function applyInterp(side, list, t) {
+    const s = sample(list, t); if (!s) return;
+    const A = s.a.f, B = s.b.f, k = s.k;
+    const rp = P(A[0], A[1], A[2]).lerp(P(B[0], B[1], B[2]), k);
+    const rq = Q(A[3], A[4], A[5], A[6]).slerp(Q(B[3], B[4], B[5], B[6]), k);
+    side.root.position.copy(rp); side.root.quaternion.copy(rq);
+    for (let i = 0; i < side.animated.length; i++) {
+      const o = 7 + i * 7; if (o + 6 >= A.length || o + 6 >= B.length) break;
+      tmpP.copy(P(A[o], A[o + 1], A[o + 2])).lerp(P(B[o], B[o + 1], B[o + 2]), k);
+      tmpQ.copy(Q(A[o + 3], A[o + 4], A[o + 5], A[o + 6]))
+          .slerp(Q(B[o + 3], B[o + 4], B[o + 5], B[o + 6]), k);
+      side.animated[i].position.copy(tmpP);
+      side.animated[i].quaternion.copy(tmpQ);
+    }
+  }
+
+  // --- hit sparks ---------------------------------------------------------
+  // Additive sprites, not lit spheres. A hit is light, and an opaque unlit ball
+  // reads as a sticker pasted on the frame at any size you make it.
+  const sparkTex = radialTexture([
+    [0, 'rgba(255,255,255,1)'], [.22, 'rgba(255,236,190,.95)'],
+    [.5, 'rgba(255,182,72,.55)'], [1, 'rgba(255,150,40,0)'],
+  ]);
+  disposables.push(sparkTex);
+  const hitEvents = c.fight.events.filter(e => e.e === 'hit' && (e.a || 0) > 0);
+  const sparks = [];
+  // ⚠ SIZE AND OPACITY GO WITH THE SQUARE OF THE DAMAGE, AND SO DOES THE COUNT.
+  // This is the fix for "the opponent is a glowing white ghost", and the ghost
+  // was never the opponent: measured at t=1 on FEATHER, hiding the sparks alone
+  // took its pixels from 2.6% CLIPPED TO PURE WHITE and 25.9% above 0.90 luma
+  // down to 0.0% and 2.8%. Nothing else moved it by more than 0.2 points — not
+  // the wall, the rings, the tags, the key light, the exposure, or the bloom
+  // threshold. The machine was fine; it was standing behind a flare.
+  // The mechanism is stacking: the replay lands FOUR hits inside 20 ms at
+  // t≈0.97 (97, 109, 46 and 33 damage), and a linear size rule made every one
+  // of them nearly as big as the 167-damage money shot — about 0.9 m across
+  // against a 1.5 m machine — so ~15 additive sprites piled onto one robot.
+  // Squaring collapses the ordinary hits (a 46-damage hit is now 0.24 m, not
+  // 0.60 m) and leaves the peak exactly as loud as it was.
+  hitEvents.forEach((e, ei) => {
+    const mag = Math.min(1, (e.a || 10) / 167);
+    const mag2 = mag * mag;
+    const n = 2 + Math.round(3 * mag);            // 2–5, by damage, stable under scrubbing
+    for (let i = 0; i < n; i++) {
+      const seed = ei * 7.13 + i * 2.71;
+      const m = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: sparkTex, transparent: true, depthWrite: false, opacity: 0,
+        blending: THREE.AdditiveBlending, color: 0xffffff,
+      }));
+      const jit = 0.06 + 0.14 * mag;              // small hits scatter less, too
+      m.position.copy(P(e.x, e.y, e.z)).add(new THREE.Vector3(
+        Math.sin(seed * 3.1) * jit, Math.cos(seed * 2.3) * jit * .8, Math.sin(seed * 1.7) * jit));
+      m.renderOrder = 15;
+      scene.add(m);
+      sparks.push({ m, t: e.t, base: 0.16 + 1.05 * mag2, delay: (i % 3) * 0.035, mag: mag2 });
+    }
+  });
+  const peakHit = hitEvents.reduce((b, e) => (!b || e.a > b.a) ? e : b, null);
+  const tPeak = peakHit ? peakHit.t : duration * 0.72;
+  const peakPos = peakHit ? P(peakHit.x, peakHit.y, peakHit.z) : new THREE.Vector3(0, .4, 0);
+
+  // --- the shot list ------------------------------------------------------
+  // ⚠ THE CAMERA USED TO SOLVE ITS DISTANCE ONCE, AT t=0, AND ONLY SLIDE
+  // AFTERWARDS — so the clip's biggest blow was framed at whatever
+  // distance the two machines happened to be apart when the clip opened, and
+  // the climax rendered at 18% of the stage. Hold wide, punch in on the peak
+  // hit, hold, and ease back out.
+  const SHOT_IN = 1.2, SHOT_HOLD = 0.5, SHOT_OUT = 1.0;
+  function shotK(t) {
+    if (t <= tPeak - SHOT_IN) return 0;
+    if (t < tPeak) return smooth((t - (tPeak - SHOT_IN)) / SHOT_IN);
+    if (t < tPeak + SHOT_HOLD) return 1;
+    if (t < tPeak + SHOT_HOLD + SHOT_OUT) return 1 - smooth((t - tPeak - SHOT_HOLD) / SHOT_OUT);
+    return 0;
+  }
+
+  let mode = 'fight', playing = false, t = 0, lastMs = performance.now();
+  let holding = false, holdT = 0, fadeV = 0, chipV = 0;
+  // The camera follows the action until the viewer takes the wheel; after
+  // that it stays exactly where they put it.
+  // ⚠ DRAGGING WAS A ONE-WAY DOOR. The hint under the stage invites "drag to
+  // orbit", and the moment you accept, auto-framing switches off for good:
+  // the shot never recovers as the clip plays, so a curious visitor is left
+  // with the machines shoved into a corner behind the arena wall and no way
+  // back. There was no reset control in the DOM at all — the only escape was
+  // switching class or mode, which nothing tells you.
+  //
+  // The button appears only once it can do something, so it costs nothing
+  // until the moment it is the thing you want.
+  let userMoved = false;
+  const bReset = document.getElementById('bReset');
+  function setUserMoved(v) {
+    userMoved = v;
+    if (bReset) bReset.style.display = v ? '' : 'none';
+  }
+  controls.addEventListener('start', () => { setUserMoved(true); });
+  if (bReset) bReset.onclick = () => {
+    setUserMoved(false);
+    if (mode === 'model') fitModelCamera();
+    // In fight mode the per-frame solver takes it back on its own; nudging
+    // the clock makes that happen now rather than at the next tick.
+    advance(0);
+    if (composer) composer.render(); else renderer.render(scene, cam);
+  };
+  const bModel = document.getElementById('bModel'), bFight = document.getElementById('bFight');
+  const bPlay = document.getElementById('bPlay'), scrub = document.getElementById('scrub');
+  const note = document.getElementById('note'), chip = document.getElementById('chip');
+  const fadeEl = document.getElementById('fade');
+
+  const camAnchor = new THREE.Vector3();
+  const camFocus = new THREE.Vector3();
+  const outward = new THREE.Vector3(), shotRight = new THREE.Vector3(), pairAxis = new THREE.Vector3();
+  const radialOut = new THREE.Vector3(), perp = new THREE.Vector3(), tmpP2 = new THREE.Vector3();
+  const tagNdc = new THREE.Vector3();
+  const probeRight = new THREE.Vector3(), probeUp = new THREE.Vector3();
+  let shotSide = 1;
+
+  function actionCentre() {
+    return champ.root.position.clone().add(foe.root.position).multiplyScalar(0.5);
+  }
+  // Where the camera wants to be for a given closeness k. The camera sits on
+  // the ray from the arena centre through the action, on the CENTRE side, so
+  // the hazard wall is what ends up behind the machines instead of black void.
+  // How many metres the two machines occupy ACROSS the view, UP the world, and
+  // ALONG the view, right now. Shed debris is not the machine any more, so
+  // anything more than 1.5 m from its own root is left out — by the finish
+  // that is most of the arena floor.
+  const extR = [0, 0], extY = [0, 0], extD = [0, 0];
+  function actionExtents(right, fwd) {
+    extR[0] = extY[0] = extD[0] = 1e9;
+    extR[1] = extY[1] = extD[1] = -1e9;
+    for (const side of [champ, foe]) {
+      const rp = side.root.position;
+      for (const m of side.animated) {
+        const p = m.position;
+        if (p.distanceToSquared(rp) > 2.25) continue;
+        const a = p.dot(right), b = p.y, c = p.dot(fwd);
+        if (a < extR[0]) extR[0] = a; if (a > extR[1]) extR[1] = a;
+        if (b < extY[0]) extY[0] = b; if (b > extY[1]) extY[1] = b;
+        if (c < extD[0]) extD[0] = c; if (c > extD[1]) extD[1] = c;
+      }
+    }
+    return extR[1] > extR[0];
+  }
+
+  function shotPose(k, out) {
+    const act = actionCentre();
+    camFocus.copy(act).lerp(peakPos, k * 0.85);
+    // ⚠ VIEW ACROSS THE PAIR, NOT ALONG IT. Aiming straight out from the arena
+    // centre — the obvious reading of "put the wall behind the action" — lines
+    // the two machines up one behind the other whenever the fight happens to
+    // run radially, and because this camera looks DOWN that turns into frame
+    // HEIGHT: the LIGHT peak measured 157% tall and 30% wide. The wall is a
+    // full cylinder, so it backs the shot from ANY bearing; the only thing that
+    // has to be true is that the camera stays inside the ring (clamped below),
+    // since a BackSide wall is invisible from outside and the shot would open
+    // onto the black void the brief is about.
+    pairAxis.subVectors(foe.root.position, champ.root.position); pairAxis.y = 0;
+    if (pairAxis.lengthSq() < 0.04) pairAxis.set(1, 0, 0);
+    pairAxis.normalize();
+    // Radially outward from the arena centre is the bearing with the MOST room
+    // behind the camera — it is the brief's original rule, and it is the
+    // fallback when the perpendicular has none.
+    radialOut.set(camFocus.x, 0, camFocus.z);
+    if (radialOut.lengthSq() < 0.05) radialOut.set(0.6, 0, 0.8);
+    radialOut.normalize();
+    perp.set(-pairAxis.z, 0, pairAxis.x);
+    // Of the two perpendiculars take the one on the same side as radialOut, so
+    // the camera falls inside the ring — with hysteresis, or a pair swinging
+    // through the radial line flips the camera to the far side between one
+    // frame and the next.
+    const sideDot = perp.dot(radialOut);
+    if (sideDot < -0.15) shotSide = -1; else if (sideDot > 0.15) shotSide = 1;
+    perp.multiplyScalar(shotSide);
+
+    // ⚠ SOLVE AT THE BASE LENS, ALWAYS. If this used the CURRENT fov it would
+    // feed last frame's zoom back into this frame's distance and chase itself.
+    // The lens correction is computed once, at the end, from what the distance
+    // solver could not deliver.
+    const tanH = Math.tan(FOV_BASE * Math.PI / 360);
+    const frameW = 2 * tanH * cam.aspect, frameH = 2 * tanH;
+    // Close-shot fills sit high because FIT_EDGE below is a hard ceiling that
+    // catches any overshoot — without that guard these had to be timid.
+    const fillW = 0.58 + (0.97 - 0.58) * k;      // wide → close
+    const fillH = 0.68 + (0.97 - 0.68) * k;
+    const L = half * 0.94;
+    const fx = camFocus.x, fz = camFocus.z;
+    // How far back this bearing can go before the camera leaves the SQUARE:
+    // the nearest slab crossing along the backward ray.
+    const exitDist = (ox, oz) => {
+      let m = 1e9;
+      if (Math.abs(ox) > 1e-6) m = Math.min(m, (ox > 0 ? (fx + L) : (fx - L)) / ox);
+      if (Math.abs(oz) > 1e-6) m = Math.min(m, (oz > 0 ? (fz + L) : (fz - L)) / oz);
+      return m;
+    };
+
+    // ⚠ AND THE PERPENDICULAR IS NOT ALWAYS AVAILABLE. When the fight is near
+    // the wall there is no room behind the camera on that bearing, and clamping
+    // the distance to fit inside the ring does not make a wide shot — it makes
+    // a CROPPED one: HEAVY measured 214% of the stage across. So walk the
+    // bearing from the perpendicular toward radial until one of them has the
+    // room the framing actually needs.
+    let dist = 9, chosen = 0; const bestBearing = null;
+    for (let s = 0; s <= 1.0001; s += 0.25) {
+      outward.copy(perp).lerp(radialOut, s).normalize();
+      shotRight.set(outward.z, 0, -outward.x);
+      // ⚠ DERIVE THE DISTANCE FROM THE EXTENT, NOT FROM THE SEPARATION. Two
+      // roots 1.5 m apart are a wide shot for the FEATHER champion and a tight
+      // one for the LIGHT one, because the machines are not the same size:
+      // framing on separation alone put the peak hit at 94% of the stage in one
+      // class and 44% in another. It also gets the phone right for free — a
+      // stage narrower than 16:10 falls out of `cam.aspect` rather than needing
+      // its own correction.
+      const ok = actionExtents(shotRight, outward);
+      const across = (ok ? extR[1] - extR[0] : 1) + 0.45;
+      const deep = ok ? extD[1] - extD[0] : 1;
+      const highW = ok ? extY[1] - extY[0] : 0.6;
+      // ⚠ FRAME AT THE MACHINES' DEPTH, NOT THE AIM POINT'S. The close shot aims
+      // at the hit, which is not where the pair's centre is, so the pair sits
+      // BEHIND the distance that was solved for and renders smaller than asked.
+      const depthOffset = tmpP2.copy(act).sub(camFocus).dot(outward);
+      let d = across / (fillW * frameW) - depthOffset;
+      // ⚠ AND SOLVE THE VERTICAL TOO. This camera looks DOWN, so the pair's
+      // depth along the view folds into the frame's HEIGHT; a width-only solve
+      // put the LIGHT peak at 157% of the stage tall. The pitch depends on the
+      // distance, so estimate, then refine once.
+      for (let i = 0; i < 2; i++) {
+        d = clamp(d, 2.2, 9);
+        const pitch = Math.atan(0.30 + 0.45 / d);
+        const tall = highW * Math.cos(pitch) + deep * Math.sin(pitch) + 0.35;
+        d = Math.max(across / (fillW * frameW), tall / (fillH * frameH)) - depthOffset;
+      }
+      d = clamp(d, 2.2, 9);
+      const dMax = exitDist(outward.x, outward.z);
+      // ⚠ THE SEARCH ALREADY STARTS PERPENDICULAR TO THE PAIR, WHICH IS THE
+      // MAXIMUM-SEPARATION BEARING, and walks toward radial only when that one
+      // has no room. Taking the first with room is therefore "the most
+      // perpendicular bearing that fits" — the right rule. Re-scoring the
+      // candidates by projected root separation was tried and is measurably
+      // worse (SUPER 56.7% → 44.7%, HEAVY 79.5% → 55.8%): the score is computed
+      // at a trial distance that the centring and fit passes below then change,
+      // so it ranks bearings by a framing that never ships.
+      const roomy = d <= dMax;
+      dist = d;
+      chosen = s;
+      if (roomy) break;
+    }
+    void bestBearing;
+    void chosen;
+
+    placeShot(out, dist);
+    // ⚠ NOW MAKE BOTH MACHINES FIT. The solver above frames the pair's EXTENT
+    // about the aim point, and the close shot aims at the HIT rather than at
+    // the pair's centre — so one machine can still hang over an edge. Measured
+    // at FEATHER's peak: the champion's box ran to x=1232 on a 1222 px canvas,
+    // 10 px off the right edge, at the exact instant the page is selling
+    // itself. Expand until every part of both machines is inside FIT_EDGE.
+    // ⚠ AND CENTRE BEFORE EXPANDING, or the expansion pays for dead space.
+    // The close shot aims at the HIT, so the pair lands off to one side; the
+    // expansion then backs the camera off to bring the near edge in, and the
+    // far half of the stage stays empty. Measured on LIGHT at its peak: the
+    // machines spanned x 29–570 of a 916 px canvas, with 346 px of nothing to
+    // the right of them. Recentre on the pair, THEN check the edges.
+    // ⚠ AND LET THE MEASUREMENT SET THE DISTANCE, IN BOTH DIRECTIONS. Everything
+    // above is an ANALYTIC estimate of how much frame the pair will take, and it
+    // is deliberately conservative: `tall` charges the full depth-along-view to
+    // the frame's height as if the far machine projected as large as the near
+    // one. On LIGHT that over-estimate held the peak at 58.9% of stage width
+    // with BOTH axes short of the edge — the shot was backed off for room it
+    // did not need. So the analytic pass is only a seed; this converges the real
+    // projected extent onto a target that opens up as the shot closes in, which
+    // is also what keeps the punch-in visible (0.58 wide → 0.94 tight).
+    // ⚠ "≥60% of stage width" IS A FLOOR, NOT A TARGET. Aiming the close shot at
+    // the FIT_EDGE ceiling put the pair at 90% and the camera effectively inside
+    // the wreckage — the gold rail filled the frame and you could not tell what
+    // you were looking at. 0.80 lands the peak near 78% span: comfortably past
+    // the floor, still clearly a punch-in from the 0.60 wide shot.
+    // ⚠ WALL-ADJACENT SHOTS PLAY BY DIFFERENT RULES. Within RIM_NEAR of the
+    // ring there is no framing that both fills the stage and keeps the wall out
+    // of it: the camera cannot back away (the ring), and magnifying from where
+    // it stands magnifies the WALL too. So this class of shot deliberately
+    // gives up span — a readable 55% beats 65% of construction tape — by
+    // pulling out and looking further down. Everything not at the rim is
+    // unaffected, including the lens narrowing, which still works there.
+    nearRim = (half - Math.max(Math.abs(camFocus.x), Math.abs(camFocus.z))) < RIM_NEAR;
+    // Close target 0.86, not 0.80: FIT_EDGE (0.92) is the hard crop ceiling, so
+    // the gap between them was simply unused frame. Worth spending because the
+    // one class that cannot win span by ANY bearing — SUPER, whose roots are
+    // 1.07 m apart at its peak, i.e. the machines interpenetrate — is limited
+    // by its VERTICAL extent there, and a closer shot is the only lever left.
+    const targetFill = (0.60 + 0.26 * k) * (nearRim ? RIM_FILL : 1);
+    const tanF = tanH;
+    for (let i = 0; i < 7; i++) {
+      const o = shotOverflow(out, FOV_BASE);
+      if (o.minZ < 0.35) { dist = Math.min(9, dist + (0.35 - o.minZ) + 0.05); placeShot(out, dist); continue; }
+      if (Math.abs(o.cx) > 0.02 || Math.abs(o.cy) > 0.02) {
+        const fh = dist * tanF, fw = fh * cam.aspect;
+        probeRight.setFromMatrixColumn(probeCam.matrixWorld, 0);
+        probeUp.setFromMatrixColumn(probeCam.matrixWorld, 1);
+        camFocus.addScaledVector(probeRight, o.cx * fw * 0.8).addScaledVector(probeUp, o.cy * fh * 0.8);
+        placeShot(out, dist);
+        continue;
+      }
+      const err = o.m / targetFill;
+      if (Math.abs(err - 1) < 0.02) break;
+      const next = clamp(dist * Math.pow(err, 0.85), 2.2, 9);
+      if (Math.abs(next - dist) < 1e-3) break;   // pinned at a clamp or the ring
+      dist = next;
+      placeShot(out, dist);
+    }
+
+    // ⚠ WHATEVER THE DISTANCE COULD NOT WIN, THE LENS TAKES. If the pair still
+    // falls short of the target here, the solver is pinned — against the ring,
+    // or against the 2.2 m minimum — and no further movement is available.
+    // Narrowing the field of view magnifies the subject from where the camera
+    // already stands: tan(fov/2) scales inversely with the magnification, so
+    // solving for the exact shortfall lands the subject ON the target rather
+    // than past it, which means this cannot crop. It only ever narrows, never
+    // widens, so a shot that is already full keeps the 42° establishing lens.
+    // ⚠ AND NOT AT THE RIM. Narrowing the lens from a camera already pinned
+    // against the ring, with the action at the wall, can only fill the frame
+    // with wall — it magnifies the backdrop exactly as much as the subject.
+    // This was tried and withdrawn: it took LIGHT's peak to ~55% hazard stripe.
+    shotFov = FOV_BASE;
+    const fin = shotOverflow(out, FOV_BASE);
+    if (!nearRim && fin.m > 0.05 && fin.m < targetFill * 0.98) {
+      const grow = targetFill / fin.m;
+      shotFov = clamp(2 * Math.atan(tanH / grow) * 180 / Math.PI, FOV_MIN, FOV_BASE);
+    }
+    return dist;
+  }
+
+  // ⚠ THE CAMERA NEVER LEAVES THE RING. A BackSide wall is invisible from
+  // outside it, so a camera even slightly beyond the boundary opens the shot
+  // onto black void — measured on LIGHT, where the gold rail cut diagonally
+  // across the foreground and ~35% of the frame was empty space past the arena.
+  // The old code clamped the distance with `Math.max(2.2, dMax)`, which SILENTLY
+  // INVERTS the clamp whenever the wall is nearer than the 2.2 m minimum: it
+  // returns 2.2, and 2.2 > dMax puts the camera outside. Clamp the POSITION,
+  // which cannot be got wrong, and buy back the lost distance as height.
+  function placeShot(out, dist) {
+    // ⚠ A SAFETY NET, NOT A COMPOSITION TOOL. Two stricter versions were tried
+    // and both starved the framing: holding the camera to the inner 72% of the
+    // arena dropped LIGHT's peak to 52.8% because the fit could not close in,
+    // and biasing the BEARING toward radial when the fight is near the rim
+    // dropped it to 50% because radial lines the two machines up one behind
+    // the other — the very thing the perpendicular bearing exists to avoid.
+    // What actually kills the black void is a wall tall enough to cover the
+    // horizon (1.1 m, above); this clamp only stops the camera ending up
+    // outside the ring, where a BackSide wall is invisible.
+    // ⚠ A SQUARE BOUND, BECAUSE THE ARENA IS SQUARE. Clamping to a circle of
+    // radius `half` excluded the corners the machines actually fight in.
+    const L = half * 0.94;
+    out.copy(camFocus).addScaledVector(outward, -dist);
+    const over = Math.max(Math.abs(out.x) / L, Math.abs(out.z) / L);
+    // ⚠ PITCH DOWN FAR ENOUGH THAT THE TOP OF THE FRAME STILL LANDS IN THE
+    // ARENA. With a 42° vertical field the frame reaches 21° above the view
+    // axis, so a camera pitched only ~20° has its upper edge pointing at or
+    // above the horizon — and everything past the wall is void.
+    // ⚠ AND STEEPER STILL WHEN THE FIGHT IS AT THE WALL. Level with a nearby
+    // wall, the frame fills with hazard stripes — a black void traded for a
+    // yellow one. Looking DOWN at ~40° puts arena floor behind the machines
+    // instead of wall. tan(40°) ≈ 0.84.
+    // 40° at the rim (tan ≈ 0.84). 45° was tried and is a bad trade: it cost
+    // LIGHT 3.4 points of span and bought back only 1.4 points of wall.
+    let lift = dist * (nearRim ? 0.84 : 0.42) + 0.45;
+    if (over > 1) {
+      const s = 1 / over; out.x *= s; out.z *= s;
+      const planar = Math.hypot(out.x - camFocus.x, out.z - camFocus.z);
+      lift = Math.max(lift, Math.min(dist * 0.85, Math.sqrt(Math.max(0, dist * dist - planar * planar))));
+    }
+    out.y = camFocus.y + lift;
+    return out;
+  }
+
+  // How far apart the two machines' ROOTS land on screen, in NDC, from a
+  // candidate camera position. This is the number that decides whether a frame
+  // shows a fight or shows one robot with another hidden behind it.
+  const scratchPos = new THREE.Vector3(), ndcA = new THREE.Vector3(), ndcB = new THREE.Vector3();
+  function rootSpread(pos) {
+    if (!foe.group.visible) return 0;
+    probeCam.fov = FOV_BASE; probeCam.aspect = cam.aspect;
+    probeCam.position.copy(pos); probeCam.up.set(0, 1, 0);
+    probeCam.lookAt(camFocus);
+    probeCam.updateMatrixWorld(true); probeCam.updateProjectionMatrix();
+    ndcA.copy(champ.root.position).project(probeCam);
+    ndcB.copy(foe.root.position).project(probeCam);
+    // Guard against a root behind the lens, where project() returns garbage.
+    if (!isFinite(ndcA.x) || !isFinite(ndcB.x) || ndcA.z > 1 || ndcB.z > 1) return 0;
+    return Math.hypot(ndcA.x - ndcB.x, ndcA.y - ndcB.y);
+  }
+
+  // Largest |NDC| reached by either machine's own parts from a candidate camera
+  // position, plus the nearest part's depth so the caller can back off before
+  // anything crosses the lens (points behind it project to garbage).
+  const probeCam = new THREE.PerspectiveCamera(42, 16 / 10, 0.1, 200);
+  // A part's own half-size in world units, cached on the mesh — the geometry
+  // never changes, only where the replay puts it.
+  // ⚠ A PART IS NO LONGER ONE MESH. Since parts are assembled from the game's
+  // own recipe, this receives an Object3D holding many primitives and has no
+  // `.geometry` of its own — reading one threw on first paint and took the
+  // whole page with it. Measure the assembled bounds once instead; the shape
+  // is fixed, only where the replay puts it changes.
+  const radBox = new THREE.Box3(), radSph = new THREE.Sphere();
+  function partRadius(obj) {
+    if (obj.userData.rad === undefined) {
+      if (obj.geometry) {
+        if (!obj.geometry.boundingSphere) obj.geometry.computeBoundingSphere();
+        obj.userData.rad = obj.geometry.boundingSphere ? obj.geometry.boundingSphere.radius : 0.15;
+      } else {
+        // Local bounds: neutralise the part's own placement first, or the
+        // radius would include how far across the arena the part happens to be.
+        const pp = obj.position.clone(), pq = obj.quaternion.clone();
+        obj.position.set(0, 0, 0); obj.quaternion.identity(); obj.updateMatrixWorld(true);
+        radBox.setFromObject(obj);
+        obj.position.copy(pp); obj.quaternion.copy(pq); obj.updateMatrixWorld(true);
+        obj.userData.rad = radBox.isEmpty() ? 0.15 : radBox.getBoundingSphere(radSph).radius;
+      }
+    }
+    return obj.userData.rad;
+  }
+  // ⚠ THE SAME "A PART IS A MESH" ASSUMPTION LIVED IN TWO MORE PLACES, and
+  // there it did not throw — it returned NOTHING. Both the fit solver and the
+  // boxes() measurement seam walked the parts with `if (!m.geometry) return`,
+  // so once parts became assembled groups every part was skipped, the point
+  // cloud came out EMPTY, and the solver read an empty cloud as "everything
+  // fits" and closed the camera to its floor — inside the machine. A silent
+  // wrong answer, with no error anywhere. Both now go through here.
+  //
+  // Each part collapses to the eight corners of the world box over its
+  // sub-meshes, so the point count per part is what it was when a part was one
+  // mesh (the solver runs 24 angles x 60 iterations over it — feeding it all
+  // ~1350 sub-primitives instead would be a visible freeze on load), while the
+  // box is drawn round the geometry that is actually there.
+  const cornBox = new THREE.Box3();
+  function partCorners(obj, emit) {
+    cornBox.setFromObject(obj);
+    if (cornBox.isEmpty()) return;
+    for (let i = 0; i < 8; i++)
+      emit(new THREE.Vector3(i & 1 ? cornBox.max.x : cornBox.min.x,
+                             i & 2 ? cornBox.max.y : cornBox.min.y,
+                             i & 4 ? cornBox.max.z : cornBox.min.z));
+  }
+  // ⚠ THE SOLVER AND THE MEASUREMENT NEED DIFFERENT ANSWERS, so they get
+  // different functions. The box above is AXIS-ALIGNED IN WORLD SPACE, which
+  // for a part sitting at an angle bulges past the geometry into empty corners
+  // — harmless in the solver (it only ever pulls the camera further out) but
+  // wrong in span()/boxes(), where it inflates the reported silhouette and
+  // makes framing look broken when it is fine. Measured on LIGHT: 1.054 of the
+  // stage by the loose box against 0.98 by this one. This walks to the actual
+  // sub-meshes and takes each one's ORIENTED corners — ~1350 points for a
+  // machine, far too many for the solver's 24x60 iterations, but nothing at
+  // all for a seam that runs when someone asks.
+  function partCornersTight(obj, emit) {
+    obj.updateWorldMatrix(false, true);
+    obj.traverse(m => {
+      if (!m.geometry) return;
+      if (!m.geometry.boundingBox) m.geometry.computeBoundingBox();
+      const bb = m.geometry.boundingBox;
+      for (let i = 0; i < 8; i++)
+        emit(m.localToWorld(new THREE.Vector3(
+          i & 1 ? bb.max.x : bb.min.x,
+          i & 2 ? bb.max.y : bb.min.y,
+          i & 4 ? bb.max.z : bb.min.z)));
+    });
+  }
+  function shotOverflow(pos, fovDeg) {
+    const fov = fovDeg || cam.fov;
+    const tanF = Math.tan(fov * Math.PI / 360);
+    probeCam.fov = fov; probeCam.aspect = cam.aspect;
+    probeCam.position.copy(pos); probeCam.up.set(0, 1, 0);
+    probeCam.lookAt(camFocus);
+    probeCam.updateMatrixWorld(true); probeCam.updateProjectionMatrix();
+    let m = 0, minZ = 1e9, x0 = 9, x1 = -9, y0 = 9, y1 = -9;
+    for (const side of [champ, foe]) {
+      if (!side.group.visible) continue;
+      const rp = side.root.position;
+      // ⚠ THE SAME SET `boxes()` REPORTS, WHEELS INCLUDED. The first version of
+      // this walked only `animated` and left the extras out, so it certified a
+      // frame as fitting while a wheel hung 29 px off the left edge — the check
+      // and the complaint were looking at different machines. And an extra's
+      // `position` is ROOT-LOCAL: it has to be resolved to world first.
+      for (const mesh of side.animated.concat(side.root.children)) {
+        mesh.getWorldPosition(tmpP2);
+        if (tmpP2.distanceToSquared(rp) > 2.25) continue;
+        tmpP2.applyMatrix4(probeCam.matrixWorldInverse);
+        const z = -tmpP2.z;
+        if (z < minZ) minZ = z;
+        if (z <= 0.05) continue;
+        // ⚠ A PART IS NOT A POINT. Fitting part CENTRES certifies a frame as
+        // full at 79% while the actual machines overflow it half again — the
+        // shot ended up at floor level inside the wreckage with the arena rail
+        // filling the screen. Add each part's own projected radius so what is
+        // being fitted is the silhouette the viewer sees.
+        const rx = partRadius(mesh) / (z * tanF * cam.aspect), ry = partRadius(mesh) / (z * tanF);
+        const nx = tmpP2.x / (z * tanF * cam.aspect), ny = tmpP2.y / (z * tanF);
+        m = Math.max(m, Math.abs(nx) + rx, Math.abs(ny) + ry);
+        if (nx - rx < x0) x0 = nx - rx; if (nx + rx > x1) x1 = nx + rx;
+        if (ny - ry < y0) y0 = ny - ry; if (ny + ry > y1) y1 = ny + ry;
+      }
+    }
+    const cx = x1 > x0 ? (x0 + x1) / 2 : 0, cy = y1 > y0 ? (y0 + y1) / 2 : 0;
+    return { m, minZ, cx, cy };
+  }
+
+  // ======================= MODEL-MODE CAMERA SOLVER =======================
+  // Four things were tried here and three of them are wrong in ways that look
+  // right. Keeping the record because each one cost a measurement.
+  //
+  //  1. Fit the bounding SPHERE — the shipped behaviour. 48% wide, 16% tall.
+  //  2. Fit both axes in closed form, d = max( (h/2)/tan(fov/2),
+  //     (w/2)/(tan(fov/2)·aspect) ). Right for a flat billboard, wrong here:
+  //     from an elevated camera most of a 3.8 m machine's LENGTH lands on the
+  //     frame's VERTICAL axis, so it asked for 4.2 m and the machine came back
+  //     112% tall — clipped.
+  //  3. Fit the machine's BOX rather than its parts. The machine is a sparse X
+  //     of beams and does not reach its own box corners: the box measured 65%
+  //     wide while the machine measured 55%.
+  //  4. Fit the union of that box's corners over a whole turn. That is a DISC
+  //     of the box diagonal — the square-footprint mistake in disguise — and
+  //     it pushed the camera from 6.1 m to 8.4 m for a 44% machine.
+  //
+  // What is here: the real part corners, solved PER TURNTABLE ANGLE for a
+  // distance, an aim point and an ELEVATION together, tabulated at load and
+  // interpolated at frame time.
+  //
+  // ⚠ THE ELEVATION HAS TO MOVE, AND THAT IS NOT A FLOURISH. Measured over a
+  // full turn at a FIXED elevation, this machine cannot satisfy "≥60% wide and
+  // ≥45% tall" at every angle from any single elevation, and no stage aspect
+  // ratio fixes it either: broadside the silhouette is 4.2× as wide as it is
+  // tall, edge-on it is 0.9×, and one 16:10 frame cannot flatter both. At 30°
+  // the width never drops below 79% but the height bottoms out at 38%; at 55°
+  // the height holds 60% but the width collapses to 31%. So the camera RISES as
+  // the machine turns edge-on and DROPS as it comes broadside — chosen per
+  // angle from the machine's own footprint, never below the 30° floor.
+  const FIT_FILL = 0.97;
+  const FIT_ELEV_MIN = 30 * Math.PI / 180, FIT_ELEV_MAX = 52 * Math.PI / 180;
+  const fitAz = new THREE.Vector2(0.73, 0.68).normalize();   // fixed compass bearing
+  const fitAzPerp = new THREE.Vector2(-fitAz.y, fitAz.x);
+  const fitDir = new THREE.Vector3();
+  const fitTarget = new THREE.Vector3();
+  const fitPoints = [];
+  {
+    champ.group.updateMatrixWorld(true);
+    champ.animated.concat([...champ.root.children])
+      .forEach(o => partCorners(o, p => fitPoints.push(p.add(modelShift))));
+  }
+
+  // The elevation that makes this angle's silhouette closest to the stage's
+  // own proportions. W is the machine across the view, D is the machine along
+  // it — D is what the elevation converts into frame height.
+  function elevationFor(rotY) {
+    const ca = Math.cos(rotY), sa = Math.sin(rotY);
+    let a0 = 1e9, a1 = -1e9, p0 = 1e9, p1 = -1e9;
+    for (const p of fitPoints) {
+      const x = p.x * ca + p.z * sa, z = -p.x * sa + p.z * ca;
+      const al = x * fitAz.x + z * fitAz.y, pe = x * fitAzPerp.x + z * fitAzPerp.y;
+      a0 = Math.min(a0, al); a1 = Math.max(a1, al);
+      p0 = Math.min(p0, pe); p1 = Math.max(p1, pe);
+    }
+    const W = Math.max(0.05, p1 - p0), D = Math.max(0.05, a1 - a0), H = modelH;
+    // Want W / ((D sin e + H cos e) · aspect) ≈ 1.15, i.e. a silhouette a shade
+    // wider than tall in frame terms. R·sin(e + φ) = T.
+    const T = W / (1.15 * cam.aspect), R = Math.hypot(D, H), phi = Math.atan2(H, D);
+    const s = clamp(T / R, -1, 1);
+    return clamp(Math.asin(s) - phi, FIT_ELEV_MIN, FIT_ELEV_MAX);
+  }
+
+  // The framing contract, stated once: fill the tighter axis to FIT_FILL, but
+  // never let the machine fall under MIN_W across or MIN_H down the stage —
+  // and if the silhouette's proportions make those two impossible at once
+  // (they do, at the edge-on angles), MIN_W is the one that gives way, because
+  // MAX_OVER caps how far past the frame the machine may go.
+  //
+  // ⚠ MAX_OVER WAS 1.16, AND 1.16 MEANT THE MACHINE GOT SLICED. Measured over
+  // a full turntable rotation, 36 angles per class, silhouette against stage:
+  //
+  //          1.16  visible area / angles cut     1.00  visible area / angles cut
+  //   FEATHER      0.612           0 of 36            0.612           0 of 36
+  //   LIGHT        0.592          16 of 36            0.554           0 of 36
+  //   HEAVY        0.622           6 of 36            0.603           0 of 36
+  //   SUPER        0.596           6 of 36            0.580           0 of 36
+  //
+  // So the old value bought 2.7-6.4% more visible machine on three classes and
+  // paid for it by cutting the top off LIGHT through nearly HALF its rotation.
+  // On a page whose headline promise is "this is the real build, in 3D", a
+  // machine with its head cut off is not a bigger machine, it is a broken
+  // photograph — and the widest angle is unchanged either way (maxW is
+  // identical to three decimals on all four classes), so the loss is only ever
+  // at the angles that did not fit. 1.00 is therefore not a loosened threshold
+  // but the contract the page actually promises: the whole machine, always.
+  const MIN_W = 0.63, MIN_H = 0.48, MAX_OVER = 1.00;
+  // Fight shot: no part of either machine past this in NDC. 0.92 rather than
+  // 0.94 so the "inside 94% of the canvas" check clears with margin instead of
+  // landing exactly on its boundary and tipping over on rounding.
+  const FIT_EDGE = 0.92;
+  let fitTable = null, fitAspect = 0;
+  function buildFitTable() {
+    fitAspect = cam.aspect;
+    const N = 24, tbl = new Array(N);
+    const v = new THREE.Vector3(), rot = new THREE.Matrix4();
+    const right = new THREE.Vector3(), up = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
+    // ⚠ SMOOTH THE ELEVATION BEFORE SOLVING. Chosen angle by angle it is
+    // bimodal — it slams between the 30° floor and the 52° ceiling from one
+    // table entry to the next — and interpolating between two camera poses
+    // that far apart puts the camera somewhere neither of them solved for.
+    const elev = [];
+    for (let i = 0; i < N; i++) elev.push(elevationFor(i / N * Math.PI * 2));
+    const smoothElev = elev.map((_, i) => {
+      let s = 0;
+      for (let k = -2; k <= 2; k++) s += elev[(i + k + N * 2) % N] * (3 - Math.abs(k));
+      return s / 9;
+    });
+    const tanA = Math.tan(cam.fov * Math.PI / 360);
+    const maxR = fitPoints.reduce((m, p) => Math.max(m, Math.hypot(p.x, p.y - modelH * 0.5, p.z)), 1);
+    for (let i = 0; i < N; i++) {
+      rot.makeRotationY(i / N * Math.PI * 2);
+      const e = smoothElev[i];
+      const dir = new THREE.Vector3(fitAz.x * Math.cos(e), Math.sin(e), fitAz.y * Math.cos(e)).normalize();
+      right.crossVectors(UP, dir).normalize();
+      up.crossVectors(dir, right).normalize();
+      const tgt = new THREE.Vector3(0, modelH * 0.5, 0);
+      let d = Math.max(1.2, modelW * 0.8);
+      for (let it = 0; it < 60; it++) {
+        cam.position.copy(tgt).addScaledVector(dir, d);
+        cam.lookAt(tgt);
+        cam.updateMatrixWorld(true); cam.updateProjectionMatrix();
+        // ⚠ PROJECT BY HAND AND WATCH THE DEPTH. `Vector3.project` on a point
+        // BEHIND the lens returns a flipped, enormous coordinate, which poisons
+        // the min/max — and the solver then reads the corrupted bounds as "it
+        // fits" and closes in further. That is how a 3.8 m machine ended up
+        // solved at 2.37 m and measured 204% of the stage tall. Any point
+        // closer than the guard pushes the camera back out instead.
+        let x0 = 9, x1 = -9, y0 = 9, y1 = -9, minZ = 1e9;
+        for (const p of fitPoints) {
+          v.copy(p).applyMatrix4(rot).applyMatrix4(cam.matrixWorldInverse);
+          const z = -v.z;
+          if (z < minZ) minZ = z;
+          if (z <= 0.05) continue;
+          const nx = v.x / (z * tanA * cam.aspect), ny = v.y / (z * tanA);
+          x0 = Math.min(x0, nx); x1 = Math.max(x1, nx);
+          y0 = Math.min(y0, ny); y1 = Math.max(y1, ny);
+        }
+        if (minZ < 0.35) { d += (0.35 - minZ) + 0.05; continue; }
+        const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+        const fh = d * tanA, fw = fh * cam.aspect;
+        // Aim and distance are coupled — moving the aim point moves the camera
+        // with it — so both corrections are damped.
+        tgt.addScaledVector(right, cx * fw * 0.7).addScaledVector(up, cy * fh * 0.7);
+        // A = width·distance and B = height·distance are near invariant, so the
+        // wanted distance follows straight from the contract above.
+        const A = (x1 - x0) / 2 * d, B = (y1 - y0) / 2 * d;
+        let want = Math.max(A, B) / FIT_FILL;
+        if (A / want < MIN_W) want = Math.min(want, A / MIN_W);
+        if (B / want < MIN_H) want = Math.min(want, B / MIN_H);
+        want = Math.max(want, Math.max(A, B) / MAX_OVER, maxR * 0.55);
+        const step = want / d;
+        d = clamp(d * Math.pow(step, 0.6), 0.6, modelW * 3);
+        if (Math.abs(step - 1) < 0.004 && Math.abs(cx) < 0.01 && Math.abs(cy) < 0.01) break;
+      }
+      tbl[i] = { d, tgt, dir };
+    }
+    fitTable = tbl;
+  }
+  const fitLerp = new THREE.Vector3();
+  function fitAt(angle) {
+    if (!fitTable) buildFitTable();
+    const N = fitTable.length, TAU = Math.PI * 2;
+    const x = ((angle % TAU) + TAU) % TAU / TAU * N;
+    const i0 = Math.floor(x), k = x - i0;
+    const a = fitTable[i0 % N], b = fitTable[(i0 + 1) % N];
+    fitLerp.copy(a.tgt).lerp(b.tgt, k);
+    fitDir.copy(a.dir).lerp(b.dir, k).normalize();
+    return a.d * (1 - k) + b.d * k;
+  }
+  function fitModelCamera() {
+    if (!fitTable || Math.abs(cam.aspect - fitAspect) > 0.02 * fitAspect) buildFitTable();
+    const d = fitAt(champ.pivot.rotation.y);
+    fitTarget.copy(fitLerp);
+    controls.target.copy(fitTarget);
+    cam.position.copy(fitTarget).addScaledVector(fitDir, d);
+    cam.lookAt(fitTarget);
+    cam.updateMatrixWorld(true); cam.updateProjectionMatrix();
+  }
+
+  function setMode(next) {
+    mode = next;
+    bModel.classList.toggle('on', next === 'model');
+    bFight.classList.toggle('on', next === 'fight');
+    bPlay.style.display = next === 'fight' ? '' : 'none';
+    scrub.style.display = next === 'fight' ? '' : 'none';
+    foe.group.visible = next === 'fight';
+    arena.visible = next === 'fight';
+    champ.ring.visible = foe.ring.visible = next === 'fight';
+    champ.glow.visible = foe.glow.visible = next === 'fight';
+    RIM.value = next === 'model' ? 0.40 : 1;
+    champTag.visible = foeTag.visible = next === 'fight';
+    pad.visible = padShadow.visible = next === 'model';
+    sparks.forEach(s => { s.m.material.opacity = 0; s.m.visible = next === 'fight'; });
+    holding = false; holdT = 0; fadeV = 0; chipV = 0;
+    fadeEl.style.opacity = 0; chip.style.opacity = 0;
+    setUserMoved(false);
+    // ⚠ RESET THE LENS ON EVERY MODE CHANGE. The fight shot may have narrowed
+    // it to reach a pinned subject; THE BUILD solves its own framing against
+    // FOV_BASE and would inherit the long lens and frame the machine wrong —
+    // and the fit table it caches would be baked at the wrong field of view.
+    camFov = shotFov = FOV_BASE;
+    if (cam.fov !== FOV_BASE) { cam.fov = FOV_BASE; cam.updateProjectionMatrix(); }
+    if (next === 'model') {
+      playing = false;
+      applyPose(champ, c.build.pose);
+      champ.group.position.copy(modelShift);      // centre over the origin
+      champ.pivot.rotation.y = 0;
+      note.textContent = 'THE MACHINE, AS BUILT';
+      cam.near = 0.05; cam.far = 400;
+      fitModelCamera();
+    } else {
+      t = 0; playing = !REDUCED; bPlay.textContent = playing ? '❚❚' : '▶';
+      champ.group.position.set(0, 0, 0);          // back to world space
+      champ.pivot.rotation.y = 0;
+      // ⚠ STATE THE NUMBER, CLAIM NOTHING. This label has now been wrong twice:
+      // "HARDEST HIT" broke when the baker started preferring a blow with
+      // follow-through, and "THE BLOW THAT DECIDED IT" was wrong on arrival —
+      // the baker deliberately AVOIDS the deciding blow on any class whose peak
+      // was the finishing one, and on the rest the match continues past the
+      // clip, so it was unverifiable everywhere. A measured damage figure is
+      // true on every branch, needs no maintenance the next time the selection
+      // rule changes, and a concrete number sells harder than a superlative.
+      note.textContent = Math.round((peakHit || {}).a || 0) + ' DAMAGE · ' +
+                         String(c.robotName).toUpperCase() +
+                         ' vs ' + String(c.fight.opponent || 'CHALLENGER').toUpperCase();
+      applyInterp(champ, bySide[champSide], 0);
+      applyInterp(foe, bySide[foeSide], 0);
+      shotPose(0, camAnchor);
+      cam.position.copy(camAnchor);
+      controls.target.copy(camFocus);
+      cam.near = 0.05; cam.far = 400; cam.updateProjectionMatrix();
+    }
+  }
+
+  bModel.onclick = () => setMode('model');
+  bFight.onclick = () => setMode('fight');
+  bPlay.onclick = () => { playing = !playing; bPlay.textContent = playing ? '❚❚' : '▶'; };
+  scrub.oninput = () => {
+    playing = false; bPlay.textContent = '▶'; holding = false;
+    t = (scrub.value / 1000) * duration;
+  };
+
+  let stop = false;
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    if (composer) composer.setSize(w, h);
+    cam.aspect = w / h; cam.updateProjectionMatrix();
+    // A fit that was solved for the old aspect is wrong for the new one, and a
+    // phone rotating to landscape is the common case.
+    if (mode === 'model' && !userMoved) fitModelCamera();
+  }
+  const ro = new ResizeObserver(resize); ro.observe(host); resize();
+
+  // One frame of simulation, split out of the rAF loop so a measurement can
+  // drive it deterministically — a background tab gets no animation frames at
+  // all, so anything that waits on wall-clock playback measures a frozen scene
+  // and reports the same number every time (it did, three times).
+  function advance(rdt) {
+    if (mode === 'fight') {
+      // Slow-motion ramp through the impact: the frame rate is the same, the
+      // clock is not.
+      const slow = (!REDUCED && t >= tPeak && t < tPeak + 0.4) ? 0.35 : 1;
+      if (playing) {
+        if (holding) {
+          // ⚠ THE LOOP USED TO HARD-CUT from the last frame to the first, which
+          // reads as a glitch, not a replay. Hold, dip to black, restart.
+          holdT += rdt;
+          if (holdT >= 0.9) { holding = false; holdT = 0; t = 0; }
+        } else {
+          t += rdt * slow;
+          if (t >= duration) { t = duration; holding = true; holdT = 0; }
+        }
+        scrub.value = (t / duration) * 1000;
+      }
+      const wantFade = holding && holdT > 0.5 ? 1 : 0;
+      fadeV += (wantFade - fadeV) * Math.min(1, rdt * 12);
+      fadeEl.style.opacity = fadeV.toFixed(3);
+      // ⚠ EASED IN JS, NOT BY A CSS TRANSITION. Both of this stage's fades are
+      // tied to the clip's own clock; a CSS transition runs on a different one
+      // and is throttled independently of it, so the chip and the dip drift
+      // apart exactly when the tab is not the one in front.
+      chipV += ((holding ? 1 : 0) - chipV) * Math.min(1, rdt * 14);
+      chip.style.opacity = chipV.toFixed(3);
+
+      applyInterp(champ, bySide[champSide], t);
+      applyInterp(foe, bySide[foeSide], t);
+
+      const sep = champ.root.position.distanceTo(foe.root.position);
+      // ⚠ THE LABELS MUST SURVIVE CONTACT — THAT IS WHEN THEY EARN THEIR KEEP.
+      // Fading them out as the machines close was meant to cut clutter, and it
+      // did the opposite: at SUPER's peak the roots are 1.07 m apart, the two
+      // machines interpenetrate (which is what a ram hit IS), and the old rule
+      // faded the opponent's label to ZERO at exactly the moment nothing else
+      // said there were two robots in the frame. Hence "no cyan tag". They now
+      // dim rather than vanish, and separate vertically so both stay readable.
+      const close = 1 - smooth((sep - 1.2) / 0.8);          // 1 when interlocked
+      [[champ, champTag, 0], [foe, foeTag, 1]].forEach(([side, tag, idx]) => {
+        side.ring.position.set(side.root.position.x, 0.02, side.root.position.z);
+        side.glow.position.set(side.root.position.x, 0.012, side.root.position.z);
+        tag.position.set(side.root.position.x,
+          side.root.position.y + 1.0 + close * (idx ? 0.62 : -0.06),
+          side.root.position.z);
+        // ⚠ KEEP THE WHOLE LABEL INSIDE THE STAGE, MEASURED BY THE LABEL'S OWN
+        // WIDTH. A fixed NDC margin is wrong by construction: it is the same
+        // for "HAMMER" and "HOUSE CROWBAR", so the long name overhangs and gets
+        // its last letter cut. Half a name reads as a rendering fault, and on
+        // LIGHT — two near-identical white machines — the tags are the ONLY
+        // thing telling them apart, so this is load-bearing. The tag slides
+        // along the top of its machine rather than sitting dead centre over it.
+        // ⚠ A LABEL IS SCREEN FURNITURE, SO GIVE IT A CONSTANT SCREEN SIZE. As a
+        // fixed-world-size sprite it grows as the camera closes in, and at the
+        // punch-in the two names covered most of the stage and each other.
+        // Sized off the current distance it stays the same height throughout.
+        {
+          const dTag = Math.max(0.2, cam.position.distanceTo(tag.position));
+          const tanF = Math.tan(cam.fov * Math.PI / 360);
+          const worldH = 2 * dTag * tanF * 0.055;   // 5.5% of frame height
+          tag.scale.set(worldH * tag.userData.aspect, worldH, 1);
+        }
+        tagNdc.copy(tag.position).project(cam);
+        if (tagNdc.z > -1 && tagNdc.z < 1) {
+          const dTag = cam.position.distanceTo(tag.position);
+          const tanF = Math.tan(cam.fov * Math.PI / 360);
+          const halfW = (tag.scale.x / 2) / Math.max(0.05, dTag * tanF * cam.aspect);
+          const halfH = (tag.scale.y / 2) / Math.max(0.05, dTag * tanF);
+          const limX = Math.max(0, 1 - halfW - 0.02);
+          // Top of the stage belongs to the note chip; keep labels clear of it.
+          const limY = Math.max(0, Math.min(1 - halfH - 0.02, 0.72));
+          if (Math.abs(tagNdc.x) > limX || Math.abs(tagNdc.y) > limY) {
+            tagNdc.x = clamp(tagNdc.x, -limX, limX);
+            tagNdc.y = clamp(tagNdc.y, -limY, limY);
+            tag.position.copy(tagNdc.unproject(cam));
+          }
+        }
+        tag.material.opacity = 0.62 + 0.33 * (1 - close);
+      });
+
+      if (!userMoved) {
+        const dist = shotPose(shotK(t), tmpP);
+        // Ease the lens at the same rate as the move, so a punch-in that needs
+        // the extra magnification reads as one continuous push rather than a cut.
+        camFov += (shotFov - camFov) * Math.min(1, rdt * 6);
+        if (Math.abs(cam.fov - camFov) > 0.02) { cam.fov = camFov; cam.updateProjectionMatrix(); }
+        camAnchor.lerp(tmpP, Math.min(1, rdt * 6));
+        controls.target.lerp(camFocus, Math.min(1, rdt * 6));
+        // Screen shake, in PIXELS converted to world units at the current
+        // distance, so a hit hits equally hard on a phone and on a desktop.
+        let shake = 0;
+        if (!REDUCED) for (const h of hitEvents) {
+          const age = t - h.t;
+          if (age >= 0 && age < 0.25) shake = Math.max(shake, (1 - age / 0.25) * Math.min(1, (h.a || 0) / 167));
+        }
+        cam.position.copy(camAnchor);
+        if (shake > 0.001) {
+          const wpp = 2 * dist * Math.tan(cam.fov * Math.PI / 360) / Math.max(1, host.clientHeight);
+          const amp = 6 * shake * wpp;
+          cam.updateMatrixWorld();
+          const right = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0);
+          const up = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
+          cam.position.addScaledVector(right, Math.sin(t * 141.7) * amp)
+                      .addScaledVector(up, Math.cos(t * 97.3) * amp);
+        }
+      }
+
+      sparks.forEach(s => {
+        const age = t - s.t - s.delay;
+        if (age >= 0 && age < .35) {
+          const k = age / .35;
+          s.m.material.opacity = (1 - k) * (0.30 + 0.70 * s.mag);
+          s.m.scale.setScalar(s.base * (1 + 1.4 * k));
+        } else {
+          s.m.material.opacity = 0;
+          s.m.scale.setScalar(.001);
+        }
+      });
+    } else {
+      champ.pivot.rotation.y += rdt * (REDUCED ? 0 : .40);   // turntable, about the robot itself
+      if (!userMoved) {
+        const d = fitAt(champ.pivot.rotation.y);
+        tmpP.copy(fitLerp).addScaledVector(fitDir, d);
+        cam.position.lerp(tmpP, Math.min(1, rdt * 8));
+        controls.target.lerp(fitLerp, Math.min(1, rdt * 8));
+      }
+    }
+    controls.update();
+  }
+
+  function loop(ms) {
+    if (stop) return;
+    const rdt = Math.min(.05, (ms - lastMs) / 1000); lastMs = ms;
+    advance(rdt);
+    if (composer) composer.render(); else renderer.render(scene, cam);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+  // ⚠ OPEN ON THE FIGHT. The still model was the first thing a visitor saw and
+  // the moving one was a click away, which is backwards for a page whose whole
+  // claim is "watch the machine that won".
+  setMode(REDUCED ? 'model' : 'fight');
+
+  // A MEASUREMENT SEAM, not a control seam. Behaviour lives in the buttons —
+  // drive those to test behaviour. This exposes only the numbers a screenshot
+  // cannot give you: where in the frame the two machines actually land at a
+  // given clip time, which is how "the climax renders tiny" was caught.
+  window.__stage = {
+    duration, tPeak, mode: () => mode, model: () => ({ w: modelW, h: modelH, size: poseSize.toArray() }),
+    fov: () => cam.fov, nearRim: () => nearRim,
+    // Fraction of the stage the arena WALL covers, measured by rendering the
+    // frame with and without it and counting the pixels that changed. Exact,
+    // and immune to guessing at the hazard stripe's colour.
+    wallArea() {
+      const draw = () => { if (composer) composer.render(); else renderer.render(scene, cam); };
+      const gl = renderer.domElement, w = gl.width, h = gl.height;
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const ctx = cv.getContext('2d');
+      draw(); ctx.drawImage(gl, 0, 0);
+      const withWall = ctx.getImageData(0, 0, w, h).data;
+      const vis = wall.visible, rvis = rail.visible;
+      wall.visible = rail.visible = false;
+      draw(); ctx.clearRect(0, 0, w, h); ctx.drawImage(gl, 0, 0);
+      const without = ctx.getImageData(0, 0, w, h).data;
+      wall.visible = vis; rail.visible = rvis; draw();
+      let diff = 0;
+      for (let i = 0; i < withWall.length; i += 4) {
+        if (Math.abs(withWall[i] - without[i]) + Math.abs(withWall[i + 1] - without[i + 1])
+          + Math.abs(withWall[i + 2] - without[i + 2]) > 12) diff++;
+      }
+      return diff / (w * h);
+    },
+    elev: () => Math.round(Math.asin(clamp(fitDir.y, -1, 1)) * 180 / Math.PI),
+    // Hide one contributor at a time. This is how "the opponent is a glowing
+    // white ghost" was traced to two DIFFERENT causes in two different classes
+    // — stacked hit sparks on FEATHER, the environment map on LIGHT — when
+    // every plausible-sounding culprit (bloom threshold, exposure, key light,
+    // the hazard wall, the team rings) moved the number by under a point.
+    isolate: {
+      wall(on) { wall.visible = on; rail.visible = on; },
+      rings(on) { champ.ring.visible = on; foe.ring.visible = on; champ.glow.visible = on; foe.glow.visible = on; },
+      pale: () => ({ champ: champ.pale, foe: foe.pale }),
+      tags(on) { champTag.visible = on; foeTag.visible = on; },
+      sparks(on) { sparks.forEach(s => s.m.visible = on); },
+      bloom(on) { if (bloom) bloom.enabled = on; },
+    },
+    spin(a) { champ.pivot.rotation.y = a; fitModelCamera(); controls.update(); if (composer) composer.render(); else renderer.render(scene, cam); },
+    to(m) { setMode(m); for (let i = 0; i < 30; i++) advance(1 / 60); if (composer) composer.render(); else renderer.render(scene, cam); },
+    seek(v) { t = clamp(v, 0, duration); holding = false; },
+    play(on) { playing = on; bPlay.textContent = on ? '❚❚' : '▶'; },
+    // Advance n frames of real playback — including the loop's hold, dip and
+    // restart, which `settle` cannot reach because it pauses the clip.
+    run(n) { for (let i = 0; i < n; i++) advance(1 / 60); if (composer) composer.render(); else renderer.render(scene, cam); },
+    holding: () => holding,
+    // ⚠ RESIZING IS INVISIBLE TO AUTOMATION WITHOUT THIS. ResizeObserver
+    // delivery is tied to the browser's rendering steps, and a hidden tab
+    // has none — the same suspension that stops requestAnimationFrame. So a
+    // harness can set the stage to any size it likes and the renderer never
+    // hears about it: the CSS box changes, the drawing buffer does not.
+    //
+    // That is why the framing work could only ever be checked at ONE aspect
+    // ratio, and why "the fix is angle-complete, not aspect-complete" was an
+    // honest limit rather than laziness. This closes it: set a size, get the
+    // fit solved for that shape, and measure span() against it.
+    setSize(w, h) {
+      host.style.width = w + 'px';
+      host.style.height = h + 'px';
+      host.style.maxWidth = 'none';
+      host.style.maxHeight = 'none';
+      resize();
+      if (composer) composer.render(); else renderer.render(scene, cam);
+      return { css: [host.clientWidth, host.clientHeight],
+               buffer: [renderer.domElement.width, renderer.domElement.height],
+               aspect: +cam.aspect.toFixed(4) };
+    },
+    // What this scene costs to draw. Parts are assembled from the game's own
+    // recipe now, so the draw call count is no longer "one per part" and is the
+    // number most likely to go wrong on a phone — which nothing here can
+    // measure directly. Make it readable rather than guessable.
+    cost() {
+      let meshes = 0, tris = 0;
+      scene.traverse(o => {
+        if (!o.isMesh || !o.geometry) return;
+        meshes++;
+        const idx = o.geometry.index, p = o.geometry.attributes.position;
+        tris += (idx ? idx.count : (p ? p.count : 0)) / 3;
+      });
+      return { meshes, tris: Math.round(tris) };
+    },
+    // Park the clip at time v and run the shot solver to rest, then draw.
+    settle(v, frames = 90) {
+      playing = false; holding = false; t = clamp(v, 0, duration);
+      for (let i = 0; i < frames; i++) advance(1 / 60);
+      if (composer) composer.render(); else renderer.render(scene, cam);
+    },
+    // Fraction of the stage spanned by the two machines' own parts (shed
+    // debris more than 1.5 m from a root is not the machine any more).
+    span() {
+      const v = new THREE.Vector3();
+      let x0 = 9, x1 = -9, y0 = 9, y1 = -9;
+      const put = p => { p.project(cam); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); };
+      if (mode === 'model') {
+        // ⚠ MEASURE THE PARTS, NOT A BOX ROUND THEM — a box round a sparse
+        // X-shaped machine reads 10 points high on both axes.
+        champ.group.updateMatrixWorld(true);
+        champ.animated.concat([...champ.root.children]).forEach(o => partCornersTight(o, put));
+        return { w: (x1 - x0) / 2, h: (y1 - y0) / 2, dist: cam.position.distanceTo(controls.target) };
+      }
+      // ⚠ SILHOUETTE, NOT CENTRES. Reporting the spread of part CENTRES flatters
+      // the framing badly — it read 79% while the machines themselves spilled
+      // well past the frame — so every part contributes its own projected size.
+      const tanF = Math.tan(cam.fov * Math.PI / 360);
+      [champ, foe].forEach(side => {
+        if (!side.group.visible) return;
+        side.animated.concat([...side.root.children]).forEach(m => {
+          m.getWorldPosition(v);
+          if (v.distanceTo(side.root.position) > 1.5) return;
+          const z = Math.max(0.05, v.distanceTo(cam.position));
+          const rx = partRadius(m) / (z * tanF * cam.aspect), ry = partRadius(m) / (z * tanF);
+          v.project(cam);
+          x0 = Math.min(x0, v.x - rx); x1 = Math.max(x1, v.x + rx);
+          y0 = Math.min(y0, v.y - ry); y1 = Math.max(y1, v.y + ry);
+        });
+      });
+      return { w: (x1 - x0) / 2, h: (y1 - y0) / 2, dist: cam.position.distanceTo(controls.target) };
+    },
+    // Each machine's own box, in CANVAS PIXELS — so a legibility check can look
+    // at the pixels of one machine instead of averaging it with the floor.
+    // "Is the opponent readable" is a question about its pixels, not the frame's.
+    boxes() {
+      const v = new THREE.Vector3(), w = renderer.domElement.width, h = renderer.domElement.height;
+      const out = {};
+      [['champ', champ], ['foe', foe]].forEach(([name, side]) => {
+        if (!side.group.visible) return;
+        let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+        const tanF = Math.tan(cam.fov * Math.PI / 360);
+        side.animated.concat([...side.root.children]).forEach(m => {
+          m.getWorldPosition(v);
+          // ⚠ THE DEBRIS FILTER IS A FIGHT-MODE FILTER. MODEL re-centres the
+          // machine over the origin while `root.position` stays at the recorded
+          // world pose, so in MODEL every part measures "far from its root" and
+          // the whole machine is filtered out — the seam returned an empty box.
+          if (mode !== 'model' && v.distanceTo(side.root.position) > 1.5) return;
+          const z = Math.max(0.05, v.distanceTo(cam.position));
+          const rx = partRadius(m) / (z * tanF * cam.aspect), ry = partRadius(m) / (z * tanF);
+          v.project(cam);
+          const px0 = ((v.x - rx) * 0.5 + 0.5) * w, px1 = ((v.x + rx) * 0.5 + 0.5) * w;
+          const py0 = (0.5 - (v.y + ry) * 0.5) * h, py1 = (0.5 - (v.y - ry) * 0.5) * h;
+          x0 = Math.min(x0, px0); x1 = Math.max(x1, px1);
+          y0 = Math.min(y0, py0); y1 = Math.max(y1, py1);
+        });
+        if (x1 > x0) out[name] = { x0: Math.round(x0), y0: Math.round(y0), x1: Math.round(x1), y1: Math.round(y1) };
+      });
+      return out;
+    },
+  };
+
+  return {
+    // ⚠ THIS RUNS BETWEEN EVERY CLASS SWITCH, AND IF IT THROWS THE PAGE
+    // FREEZES. select() calls dispose() before the next mount(), so a single
+    // bad reference in here strands the old scene on screen and never builds
+    // the new one — the failure looks like "the display got stuck", nothing
+    // like a teardown bug. Every step is now individually guarded: a teardown
+    // that half-fails must still release the WebGL context.
+    dispose() {
+      window.__stage = null;      // select() always disposes before it mounts
+      const step = fn => { try { fn(); } catch (e) { console.warn('[champions] dispose step failed:', e); } };
+      stop = true;
+      step(() => ro.disconnect());
+      step(() => controls.dispose());
+      step(() => scene.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }));
+      step(() => disposables.forEach(d => d.dispose && d.dispose()));
+      step(() => [champTag, foeTag].forEach(s => s.material.map && s.material.map.dispose()));
+      step(() => { if (envRT) envRT.dispose(); if (pmrem) pmrem.dispose(); });
+      step(() => { if (composer) composer.dispose(); });
+      step(() => renderer.dispose());
+      // ⚠ dispose() ALONE DOES NOT FREE THE CONTEXT, and a phone allows very
+      // few. Five classes = five mounts; without this, switching around the
+      // board exhausts them and later mounts get a dead context.
+      step(() => renderer.forceContextLoss());
+      step(() => { if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement); });
+    }
+  };
+}
+
+// ---------------------------------------------------------------- boot LAST
+if (!showcase) {
+  panel.innerHTML = '<div class="unclaimed">The champions feed is being rebuilt — check back shortly.</div>';
+} else {
+  document.getElementById('season').textContent = showcase.season ?? '1';
+  // ⚠ THE COPY HAS TO MATCH THE BAKER, AND IT HAS DRIFTED TWICE NOW. First it
+  // said "the last N seconds of the winning fight", which died when the baker
+  // started cutting a window around the biggest hit instead. Then it said the
+  // clip WAS the fight's biggest hit — which died when the baker started
+  // preferring a blow it can show the consequence of, so that a fight ending on
+  // its heaviest blow shows the second heaviest with a second of follow-through
+  // rather than a hit and an instant cut. Measured on the current bake: LIGHT
+  // shows 110.4 where the fight's peak was 145.4, SUPER 121.2 where it was
+  // 173.4. Hence "ONE OF the fight's heaviest hits" — true for every class,
+  // whichever branch the baker takes. A caption describing a different clip
+  // than the one playing is a lie the reader can see.
+  document.getElementById('stamp').textContent =
+    'Rebuilt ' + (showcase.generated || '').replace('T', ' ').replace('Z', ' UTC') +
+    ' · each clip is cut around one of the fight\'s heaviest hits, up to ' +
+    (showcase.clipSeconds || 10) + ' seconds, straight from the match record.';
+  buildTabs();
+}
+</script>
+<noscript><p class="wrap" style="color:#8b93a4">The champions viewer needs JavaScript. The
+<a href="/robot-brawl/">Robot Brawl page</a> has the leaderboard without it.</p></noscript>
+<script src="/assets/subscribe.js?v=20260901a" defer></script>
+</body>
+</html>
