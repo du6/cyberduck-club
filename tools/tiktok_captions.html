@@ -1,0 +1,59 @@
+<!doctype html><meta charset="utf-8"><title>captions</title>
+<body style="background:#222;color:#ccc;font-family:-apple-system,Helvetica,sans-serif">
+<canvas id="c" width="1080" height="1920" style="width:270px;height:480px;background:#000"></canvas>
+<pre id="log"></pre>
+<script>
+// Draws a caption or a card on a 1080x1920 canvas and POSTs the PNG to the
+// collector. This ffmpeg has no drawtext, so every word on screen is born here.
+const C = document.getElementById('c'), g = C.getContext('2d');
+const W = C.width, H = C.height, YEL = '#E8C11C', INK = '#0A0C11';
+function wrap(text, x, y, maxW, lh, font, color, align) {
+  g.font = font; g.fillStyle = color; g.textAlign = align || 'center'; g.textBaseline = 'middle';
+  const words = text.split(' '); let line = '', lines = [];
+  for (const w of words) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+  lines.push(line);
+  lines.forEach((l, i) => g.fillText(l, x, y + (i - (lines.length - 1) / 2) * lh));
+  return lines.length;
+}
+function band(y, h, alpha) { g.fillStyle = 'rgba(10,12,17,' + alpha + ')'; g.fillRect(0, y, W, h); }
+function hazard(y, h) { g.fillStyle = YEL; for (let x = -40; x < W + 40; x += 88) { g.beginPath(); g.moveTo(x, y); g.lineTo(x + 44, y); g.lineTo(x + 24, y + h); g.lineTo(x - 20, y + h); g.fill(); } }
+function clear() { g.clearRect(0, 0, W, H); }
+async function post(name) { const d = C.toDataURL('image/png'); await fetch('http://127.0.0.1:8899/' + name, { method: 'POST', body: d }); log.textContent += name + ' ' + Math.round(d.length / 1024) + 'kb\n'; }
+
+// caption: big yellow headline high in the frame, optional white subline
+function caption(head, sub, yTop) {
+  clear(); const y = yTop || 300;
+  g.shadowColor = 'rgba(0,0,0,0.9)'; g.shadowBlur = 24;
+  const n = wrap(head, W / 2, y, 960, 118, '900 104px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', YEL);
+  if (sub) wrap(sub, W / 2, y + n * 70 + 60, 900, 66, '700 56px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', '#FFFFFF');
+  g.shadowBlur = 0;
+}
+// the link, pinned low on every shot (TikTok's own UI covers the bottom ~15% and the right rail, so keep it at ~78%)
+function linkTag() {
+  const y = 1500; band(y - 54, 108, 0.72); hazard(y - 60, 6); hazard(y + 54, 6);
+  g.font = '900 64px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif'; g.fillStyle = '#FFFFFF'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('cyberduck.club/play/rb', W / 2, y);
+}
+// end card: solid, everything in one place
+function endcard() {
+  clear(); g.fillStyle = INK; g.fillRect(0, 0, W, H);
+  hazard(560, 14);
+  wrap('ROBOT BRAWL', W / 2, 700, 1000, 120, '900 128px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', '#FFFFFF');
+  wrap('BOLT & BLADE', W / 2, 810, 1000, 70, '800 60px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', YEL);
+  hazard(880, 14);
+  wrap('Play free in your browser', W / 2, 1060, 960, 84, '800 76px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', '#FFFFFF');
+  wrap('no download  ·  no sign-up  ·  loads in seconds', W / 2, 1160, 960, 56, '600 46px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif', '#A9B3C4');
+  g.fillStyle = YEL; g.fillRect(140, 1290, 800, 150);
+  g.font = '900 72px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif'; g.fillStyle = INK; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('cyberduck.club/play/rb', W / 2, 1365);
+}
+window.make = async function () {
+  caption('It drives itself.', 'Your robot. Your program.'); linkTag(); await post('cap_hook.png');
+  caption('Build it. Program it.', 'Then watch it fight.'); linkTag(); await post('cap_build.png');
+  caption('Every win pays.', 'Every loss drops a crate.'); linkTag(); await post('cap_loss.png');
+  caption('A robot is waiting for you.', 'Fight in 30 seconds.'); linkTag(); await post('cap_ready.png');
+  clear(); linkTag(); await post('cap_link.png');
+  endcard(); await post('card_end.png');
+  return log.textContent;
+};
+</script>
